@@ -233,43 +233,74 @@ Chia sẻ với bạn bè
 
 ---
 
-## 10. Design Language (Inspired by Orchexa)
+## 10. Design Language (Earthy — Warm)
+
+> Hệ thiết kế này lấy từ `brand/brand.md` — đồng bộ 100% với Brand Kit. Mọi token dưới đây phải khớp với bảng màu, typography, tone trong brand.md.
 
 ### Bảng màu
 
-| Vai trò | Màu | Hex | Cách dùng |
-|---------|-----|-----|-----------|
-| Màu chính | Cam năng lượng | `#FF6B35` | CTA, nhấn tiêu đề, trạng thái quan trọng |
-| Màu phụ | Xanh navy đậm | `#1A1A2E` | Nền đặc biệt, header, footer |
-| Màu accent | Teal mint | `#00D4AA` | Success, highlights, secondary actions |
-| Nền chính | Đen nhẹ | `#0F0F1A` | Background toàn trang |
-| Nền card | Xám đậm | `#1E1E2E` | Card, vùng nội dung |
-| Chữ chính | Trắng | `#FFFFFF` | Tiêu đề, nội dung quan trọng |
-| Chữ phụ | Xám nhạt | `#A0A0B0` | Ghi chú, caption, label |
-| Gradient | Cam → Cam nhạt | `linear-gradient(135deg, #FF6B35, #FF8E53)` | Buttons, highlights |
+| Token | Hex | Vai trò | Cách dùng |
+|-------|-----|---------|-----------|
+| `--brand-primary` | `#3D2314` | Espresso — màu chủ đạo | Logo, text chính, nút CTA chính, border mạnh |
+| `--brand-primary-dark` | `#5C3317` | Dark Roast — nền tối | Header, footer, card nổi bật |
+| `--brand-primary-soft` | `#8B4513` | Saddle Brown — phụ | Icon, dividers, accent đậm |
+| `--brand-accent` | `#C68E17` | Golden — accent chính | CTA, rating star, highlight, link |
+| `--brand-accent-soft` | `#D4A574` | Caramel — phụ | Button secondary, hover, badge |
+| `--brand-accent-bg` | `#F5DEB3` | Butter Yellow — nền nhẹ | Section background, tag highlight |
+| `--brand-bg` | `#FDF5E6` | Cream — nền chính | Body background mặc định (light mode) |
+| `--brand-bg-soft` | `#FAF0E6` | Linen — nền phụ | Section xen kẽ |
+| `--brand-bg-card` | `#F5F0EB` | Beige — card | Card background, surface nhẹ |
+| `--brand-text` | `#2C1810` | Brown 900 | Text chính, heading |
+| `--brand-text-muted` | `#9C8B7A` | Warm Gray | Caption, meta, label |
+| `--brand-border` | `#D4C5B5` | Border Brown | Divider, border nhẹ |
+
+### Dark mode (khi toggle)
+
+| Token | Hex | Vai trò |
+|-------|-----|---------|
+| `--brand-bg` | `#1A0F0A` | Dark Espresso — background |
+| `--brand-bg-card` | `#2D1F15` | Dark Roast — card / elevated surface |
+| `--brand-border` | `#3D2D25` | Border Dark |
+| `--brand-text` | `#F5F0EB` | Text Light |
+| `--brand-text-muted` | `#B8A090` | Text Muted |
 
 ### Typography
 
-**Font đề xuất:**
+**Font chính (khớp brand.md):**
+- Heading: **Plus Jakarta Sans** (ExtraBold 800, Bold 700, SemiBold 600)
+- Body: **Inter** (Regular 400, Medium 500, SemiBold 600)
+- Fallback tiếng Việt: **Be Vietnam Pro** → system-ui
 
-- Heading: **Inter Bold / SemiBold** (700, 600)
-- Body: **Inter Regular / Medium** (400, 500)
+**Thang cỡ chữ (khớp brand.md):**
 
-**Thang cỡ chữ:**
-
-- H1: 48-56px, đậm, ngắn, ưu tiên nhịp thở rộng
-- H2: 32-40px
-- H3: 24-28px
-- Body: 16-18px
-- Caption: 13-14px
+| Cấp | Font | Size | Weight | Line-height | Dùng cho |
+|-----|------|------|--------|-------------|----------|
+| Display | Plus Jakarta Sans | 48px | 800 | 1.1 | Hero title |
+| H1 | Plus Jakarta Sans | 36px | 700 | 1.2 | Page title |
+| H2 | Plus Jakarta Sans | 28px | 700 | 1.25 | Section title |
+| H3 | Plus Jakarta Sans | 22px | 600 | 1.3 | Card title |
+| H4 | Plus Jakarta Sans | 18px | 600 | 1.4 | Sub section |
+| Body Large | Inter | 18px | 400 | 1.6 | Mô tả dài |
+| Body | Inter | 16px | 400 | 1.5 | Nội dung chính |
+| Body Small | Inter | 14px | 400 | 1.5 | Caption, meta |
+| Caption | Inter | 12px | 500 | 1.4 | Tag, label |
+| Button | Inter | 16px | 600 | 1.0 | CTA |
 
 ### Nguyên tắc thiết kế
 
-1. Dark mode-first (như Orchexa)
-2. Gradient accents cho năng lượng
-3. Glassmorphism cards (nền trong suốt nhẹ)
-4. Micro-interactions mượt
-5. Trust signals ở khắp nơi (stats, badges, reviews)
+1. **Warm-light-first** — nền kem/beige làm mặc định; dark mode là tùy chọn.
+2. **Accent vàng nâu** (`#C68E17`) cho CTA và highlight — không dùng đỏ/cam cháy.
+3. **Card có shadow nhẹ + border ngà** — không glassmorphism, không gradient đậm.
+4. **Micro-interactions mượt** — dùng easing `ease-out`, 200–300ms, tôn trọng `prefers-reduced-motion`.
+5. **Trust signals kiểu "nhà bếp"** — stats, badges, testimonial hiển thị tự nhiên, không marketing-sleek.
+6. **Hình ảnh warm** — tăng warmth +15%, saturation +10% theo brand.md.
+
+### Nguyên tắc tone giọng (từ brand.md)
+
+- **4 tính từ:** Ngắn gọn · Rõ ràng · Bình thường · Có ích.
+- **Xưng "mình – bạn"**, không "quý khách".
+- **Emoji vừa đủ**, đặt đúng chỗ.
+- **Không nói cố ý dí dỏm**, không viết dài.
 
 ---
 
@@ -631,6 +662,231 @@ interface Review {
 
 ---
 
-*Tài liệu phiên bản: 2.0*
+## 19. Quyết định sản phẩm v2.1 (cập nhật 2026-07-24)
+
+> Phần này là **phụ lục ưu tiên cao**, ghi nhận các quyết định mới nhất. Mọi phần khác của tài liệu cần đối chiếu lại khi triển khai.
+
+### 19.1 Hướng sản phẩm
+
+- **Nền tảng:** **React Native (Expo)** — mobile app thật trên iOS + Android. Web/landing page chỉ là trang marketing tĩnh tối thiểu.
+- **Lý do:** Cần camera thật, GPS thật, push notifications, App Store presence — vượt quá khả năng PWA.
+- **Cơ chế xác thực:** Supabase Auth (email + Google).
+
+### 19.2 Nhóm bạn (Group)
+
+- **Loại quan hệ:** **Mutual opt-in** — cả 2 bên phải chấp nhận mới trở thành bạn.
+- **Giới hạn nhóm:** tối đa **20 thành viên/group**.
+- **Tính năng "Group spin":** **Có** — cả nhóm cùng quay 1 lần, kết quả là 1 quán mà cả nhóm đồng thuận (mỗi người thấy cùng 1 kết quả, có thể vote "chấp nhận" / "quay lại").
+- **Tên hiển thị:** Mỗi user có **2 tên**:
+  - `display_name_private` — dùng trong nhóm bạn, có thể là biệt danh.
+  - `display_name_public` — tên đại diện trên profile công khai, có thể trùng `display_name_private` hoặc khác.
+- **Privacy:** Trong nhóm, mọi locket chỉ chia sẻ nếu user chọn `visibility = "friends"` hoặc `"public"`. Mặc định trong nhóm là `friends`.
+
+### 19.3 Locket — Camera-only
+
+- **Không cho upload ảnh từ thư viện.** Chỉ chụp từ camera trong app.
+- **Công nghệ:** `expo-image-picker` ở chế độ `cameraOnly: true` (chặn gallery).
+- **Metadata bắt buộc** lưu cùng ảnh:
+  - `captured_at` (timestamp thiết bị — kiểm tra hợp lý so với server time).
+  - `gps_lat`, `gps_lng` (nếu user cấp quyền).
+  - `device_hash` (chuỗi anonymized, giúp truy vết ảnh giả / gửi hàng loạt).
+- **EXIF gốc** sẽ bị strip trước khi lưu — server chỉ giữ metadata chuẩn hoá của app.
+- **Hiệu ứng / filter:** Có thể cho phép filter nhẹ trong app (warm tone, theo brand guideline). Không cho phép filter làm sai giá trị/authenticity.
+- **Locket feed:** Hiển thị theo thứ tự thời gian (chronological, không algorithm ranking) — chính sách cam kết "review thật".
+
+### 19.4 Profile công khai
+
+- **Mỗi user có 1 profile công khai** (`/u/:public_id` hoặc `/profile/:username`).
+- **Hiển thị:** avatar, `display_name_public`, bio ngắn, **grid các locket có `visibility = "public"`**, thống kê (số quán đã thử, số nhóm, số locket).
+- **Locket `visibility = "friends"`** không xuất hiện trên profile công khai.
+- **Tên trong nhóm (`display_name_private`)** không bao giờ hiển thị public.
+
+### 19.5 Bản đồ quán ăn (Restaurant Map)
+
+- **Nguồn dữ liệu 2 lớp:**
+  1. **Seed từ Google Places API** — tự động thêm khi search/lookup. Mỗi quán Google có `source = "google_places"` và `google_place_id`.
+  2. **User-submitted** — khi user muốn thêm quán không có trên Google. `source = "user_submitted"`, `status = "pending"`.
+- **Moderation:**
+  - **Steward chỉ duyệt các quán `user_submitted`** (vì Google đã là nguồn tương đối đáng tin).
+  - Flow: user thêm → trạng thái `pending` → Steward duyệt → `approved` (có thể hợp nhất với Google Places nếu detect trùng) hoặc `rejected`.
+  - **Quán Google Places** vẫn có thể được user contribute thêm ảnh (locket) — không cần steward duyệt ảnh.
+- **Chống trùng lặp:**
+  - Khi user thêm quán mới, server check khoảng cách (bán kính 50m) + tên gần đúng so với quán Google đã biết → gợi ý "Có phải quán này không?" trước khi tạo mới.
+- **Kiểm duyệt review / locket text:** Để phase **v1.2** — có thể dùng AI moderation (OpenAI Moderation API) + report + manual queue.
+
+### 19.6 Phạm vi v1.0 (MVP)
+
+| Tính năng | Status |
+|-----------|:------:|
+| Auth (email + Google) qua Supabase | ✅ |
+| Onboarding (chọn cuisine, vị trí, tên) | ✅ |
+| **Spin cá nhân** (random trong bán kính, filter cuisine/giá) | ✅ |
+| **Group spin** (mutual opt-in, max 20 người, vote chấp nhận) | ✅ |
+| **Locket capture** (camera-only, có metadata, geotag) | ✅ |
+| Locket feed (cá nhân + nhóm + public) | ✅ |
+| Profile công khai (grid locket public) | ✅ |
+| **Thêm quán user-submitted** (chờ steward duyệt) | ✅ |
+| **Steward dashboard** (duyệt quán mới) | ✅ |
+| Google Places lookup / seed | ✅ |
+| Kiểm duyệt review/locket text | ❌ v1.2 |
+| AI gợi ý theo khẩu vị | ❌ v1.2 |
+| Streak / gamification | ❌ v2.0 |
+| In-app chat | ❌ v2.0 |
+| Web app (chỉ marketing page tĩnh) | có thể có |
+
+### 19.7 Stack công nghệ (đề xuất)
+
+| Layer | Lựa chọn | Ghi chú |
+|-------|----------|---------|
+| App | **Expo SDK 52 + Expo Router** + TypeScript | EAS Build cho store |
+| UI | **NativeWind** (Tailwind cho RN) + tokens Earthy từ `brand.md` | |
+| Animation | **Reanimated 3** + **Moti** | Spin wheel, micro-interactions |
+| State | **Zustand** + **TanStack Query** | Cache + realtime |
+| Map | **react-native-maps** | OpenStreetMap tile (miễn phí) |
+| Backend | **Supabase** (Postgres + Auth + Storage + Realtime) | PostGIS cho query bán kính |
+| DB extension | **PostGIS** | `ST_DWithin` cho "quán trong 5km" |
+| Storage | **Supabase Storage** | Ảnh locket, resize qua Edge Function |
+| Camera | **expo-image-picker** (cameraOnly) | |
+| Location | **expo-location** | Foreground + background khi cần |
+| Push | **Expo Push Notifications** | Free đủ dùng cho v1 |
+| Reviews / moderation | **OpenAI Moderation API** (v1.2) | |
+| Deploy | **EAS Build** + **Supabase Cloud** | |
+| CI/CD | **EAS Submit** + GitHub Actions | |
+
+### 19.8 Data Model (cập nhật theo quyết định trên)
+
+```typescript
+// User
+interface User {
+  id: string;                       // uuid
+  email: string;
+  display_name_private: string;     // tên dùng trong nhóm bạn
+  display_name_public: string;      // tên trên profile công khai
+  username: string;                 // unique handle dùng cho URL
+  public_id: string;                // ngẫu nhiên, dùng cho /u/:public_id
+  avatar_url?: string;
+  bio?: string;
+  is_steward: boolean;              // role duyệt quán
+  created_at: Date;
+  preferences: {
+    cuisines: string[];
+    price_range: 1 | 2 | 3 | 4;
+    dietary: string[];              // vegetarian, vegan, halal, ...
+  };
+}
+
+// Friendship (mutual opt-in)
+interface Friendship {
+  id: string;
+  user_a: string;                   // user id
+  user_b: string;                   // user id
+  status: 'pending' | 'accepted' | 'blocked';
+  requested_by: string;
+  created_at: Date;
+  accepted_at?: Date;
+}
+
+// Group (nhóm để quay chung)
+interface Group {
+  id: string;
+  name: string;
+  owner_id: string;
+  member_ids: string[];             // max 20
+  created_at: Date;
+}
+
+// Restaurant (hợp nhất 2 nguồn)
+interface Restaurant {
+  id: string;
+  source: 'google_places' | 'user_submitted';
+  google_place_id?: string;
+  name: string;
+  address: string;
+  location: GeoJSON<Point>;          // PostGIS geography(Point, 4326)
+  cuisine: string[];
+  price_range: 1 | 2 | 3 | 4;
+  rating_avg?: number;
+  photos: string[];
+  status: 'approved' | 'pending' | 'rejected' | 'merged';
+  submitted_by?: string;
+  approved_by?: string;              // steward id
+  created_at: Date;
+}
+
+// Locket (chụp ảnh món ăn, kèm review)
+interface Locket {
+  id: string;
+  user_id: string;
+  restaurant_id?: string;            // optional - có thể chụp món không rõ quán
+  dish_name?: string;
+  image_url: string;                 // đã strip EXIF
+  thumbnail_url: string;
+  note?: string;                     // text review
+  rating?: number;                   // 1..5
+  visibility: 'private' | 'friends' | 'public';
+  captured_at: Date;                 // timestamp từ thiết bị
+  captured_gps?: GeoJSON<Point>;
+  device_hash: string;               // anonymized
+  group_id?: string;                 // nếu chụp trong context group
+  status: 'active' | 'removed' | 'reported';
+  created_at: Date;
+}
+
+// Spin (lượt quay)
+interface Spin {
+  id: string;
+  user_id: string;
+  group_id?: string;                 // null = cá nhân
+  filters: {
+    cuisines?: string[];
+    price_range?: number[];
+    radius_km: number;
+    dietary?: string[];
+  };
+  result_restaurant_id: string;
+  votes?: {                          // cho group spin
+    user_id: string;
+    vote: 'accept' | 'respin';
+    at: Date;
+  }[];
+  created_at: Date;
+}
+
+// Steward moderation queue
+interface RestaurantSubmission {
+  id: string;
+  restaurant_id: string;
+  submitted_by: string;
+  submitted_at: Date;
+  reviewed_by?: string;
+  review_notes?: string;
+  decision?: 'approved' | 'rejected' | 'merged_into';
+  merged_with_id?: string;
+}
+```
+
+### 19.9 Ràng buộc & invariants quan trọng
+
+1. `Group.member_ids.length <= 20` — enforced ở DB + app.
+2. `Locket.image_url` chỉ nhận từ endpoint upload của app — backend từ chối nếu không có `device_hash` hợp lệ và `captured_at` trong vòng 60s so với server time.
+3. `Locket.visibility = 'public'` hiển thị trên profile công khai, **không** hiển thị `display_name_private`.
+4. `Restaurant.source = 'user_submitted'` chỉ xuất hiện trong roulette sau khi `status = 'approved'`.
+5. `Friendship` mutual: `current_user` thấy user B là bạn **chỉ khi** cả 2 record `accepted` tồn tại (kết hợp 2 chiều user_a → user_b hoặc user_b → user_a).
+6. `User.public_id` không đổi sau khi tạo — dùng để chia sẻ profile an toàn (username có thể đổi).
+7. Camera permission phải được xin trước khi mở capture screen — fallback khi denied = hiện thông báo "Không thể tạo locket nếu không bật camera".
+
+### 19.10 Open questions còn lại (để thống nhất sau)
+
+- [ ] Steward role: có phải là `is_steward = true` trên `User`, hay một bảng `steward_team` riêng?
+- [ ] Bạn bè có thể mời vào group, hay chỉ owner mới thêm?
+- [ ] Group spin lưu vĩnh viễn hay có thể "giải tán" nhóm sau khi quay?
+- [ ] Ảnh locket có tự hủy (24h) hay giữ vĩnh viễn?
+- [ ] Push notification khi bạn bè đăng locket mới — bật/tắt riêng từng người?
+- [ ] `device_hash` có thể reset khi user đổi máy? (cần chiến lược chống false-positive)
+
+---
+
+*Tài liệu phiên bản: 2.2*
 *Cập nhật lần cuối: 2026-07-24*
-*Lấy cảm hứng từ Orchexa Design System*
+*Design Language đồng bộ với `brand/brand.md` — hệ Earthy (nâu-vàng, warm light-first).*
+*Quyết định sản phẩm v2.1 (Expo + RN, group max 20, camera-only locket, 2 tên, steward moderation): xem §19.*

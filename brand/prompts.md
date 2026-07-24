@@ -1,0 +1,474 @@
+# Food Roulette — Master Prompt
+
+> File này là **single-source-of-truth dạng prompt**: chép nội dung bên dưới vào bất kỳ AI nào (Cursor, ChatGPT, Claude, v.v.) để AI hiểu đầy đủ dự án mà không cần đọc thêm tài liệu nào khác trong repo.
+>
+> Cách dùng: copy block trong dấu ```prompt ...``` ở **§0**. Muốn chuyên sâu hơn về phần nào, tham khảo các §1–§9 bên dưới.
+>
+> Phiên bản: **2.2** · Cập nhật: **2026-07-24** · Trạng thái: **Pre-implementation (chưa viết code)**
+
+---
+
+## §0 · PROMPT DÁN VÀO AI (master prompt)
+
+```prompt
+Bạn đang đọc spec dự án "Food Roulette". Hãy đọc kỹ và xác nhận bạn hiểu trước khi trả lời bất kỳ câu hỏi nào.
+
+## 1. Sản phẩm là gì
+
+Food Roulette là **mobile app** (React Native + Expo, chạy thật trên iOS + Android) giúp người dùng Việt Nam **chọn quán ăn ngẫu nhiên xung quanh vị trí hiện tại** bằng cách quay một bánh xe (roulette) — giải quyết "nghịch lý lựa chọn" khi có quá nhiều quán nhưng không biết chọn cái nào.
+
+**USP (điểm khác biệt so với Foody/ShopeeFood):**
+- **Spin cho nhóm** (tối đa 20 người, vote chấp nhận/quay lại) — giải quyết cơn đau "đi ăn nhóm cãi nhau".
+- **Locket camera-only** — ảnh phải chụp từ camera trong app, không upload từ thư viện. Mỗi ảnh có GPS + timestamp + device_hash để chống ảnh giả.
+- **2 tên hiển thị** — `display_name_private` (trong nhóm bạn) và `display_name_public` (trên profile công khai).
+- **Bản đồ quán riêng** — seed Google Places + user-submitted + Steward duyệt (chỉ duyệt quán user-submitted).
+- **Review thật** — cam kết "review từ người dùng thật, không phải quảng cáo".
+
+## 2. Tagline
+
+*"Không biết ăn gì? Để vòng quyết định."*
+*"Quay là ra, ăn là ghiền."*
+Brand promise: *"Mỗi lần quay là một cuộc phiêu lưu ẩm thực — không bao giờ nhàm chán."*
+
+## 3. Đối tượng
+
+- Gen Z & Millennials (18–30 tuổi), sinh viên + nhân viên văn phòng tại TP lớn.
+- Nhóm bạn / cặp đôi / gia đình đang "đứng hình trước câu hỏi ăn gì".
+- Người thích khám phá quán mới nhưng lười lọc.
+
+## 4. Tone giọng (BẮT BUỘC khi viết content)
+
+4 tính từ: **Ngắn gọn · Rõ ràng · Bình thường · Có ích**.
+- Xưng "mình – bạn", không "quý khách".
+- Dùng "spin" (không "quay số"), "locket" (không "bộ sưu tập"), "review" (không "đánh giá"), "món ăn"/"nhà hàng" (không "đồ ăn"/"cửa hàng").
+- Emoji vừa đủ, đúng chỗ. Không viết dài. Không so sánh trực tiếp đối thủ.
+
+## 5. Brand & Design Language
+
+- **Hệ thiết kế: Earthy (warm light-first)** — KHÔNG phải dark mode, KHÔNG cam đỏ.
+- **Màu chính:**
+  - Espresso `#3D2314` (text chính, CTA chính)
+  - Dark Roast `#5C3317` (nền tối, header/footer)
+  - Saddle Brown `#8B4513` (icon, border mạnh)
+- **Màu accent (CTA, highlight):**
+  - Golden `#C68E17` (CTA chính)
+  - Caramel `#D4A574` (secondary)
+  - Butter Yellow `#F5DEB3` (section background)
+- **Nền:**
+  - Cream `#FDF5E6` (body default)
+  - Linen `#FAF0E6` (section xen kẽ)
+  - Beige `#F5F0EB` (card)
+- **Text:** Brown 900 `#2C1810` (chính), Warm Gray `#9C8B7A` (muted).
+- **Dark mode** (tùy chọn): nền `#1A0F0A`, card `#2D1F15`, text `#F5F0EB`.
+- **Font:**
+  - Heading: **Plus Jakarta Sans** (800/700/600)
+  - Body: **Inter** (400/500/600)
+  - Fallback tiếng Việt: **Be Vietnam Pro** → system-ui
+- **Nguyên tắc:** warm-light-first · card có shadow nhẹ · micro-interactions mượt · tôn trọng `prefers-reduced-motion` · tăng warmth +15%, saturation +10% cho ảnh.
+
+## 6. Stack công nghệ
+
+| Layer | Lựa chọn |
+|-------|----------|
+| App | **Expo SDK 52 + Expo Router + TypeScript** (EAS Build) |
+| UI | **NativeWind** (Tailwind cho RN) + tokens Earthy |
+| Animation | **Reanimated 3** + **Moti** (spin wheel) |
+| State | **Zustand** + **TanStack Query** |
+| Map | **react-native-maps** + OpenStreetMap tiles |
+| Backend | **Supabase** (Postgres + Auth + Storage + Realtime) |
+| DB | **Postgres + PostGIS** (query bán kính) |
+| Storage | **Supabase Storage** (resize qua Edge Function) |
+| Camera | **expo-image-picker** (`cameraOnly: true`) |
+| GPS | **expo-location** |
+| Push | **Expo Push Notifications** |
+| Moderation (v1.2) | **OpenAI Moderation API** |
+| Deploy | **EAS Build** + **Supabase Cloud** |
+| CI/CD | **EAS Submit** + GitHub Actions |
+
+## 7. Phạm vi v1.0 (MVP — đã thống nhất)
+
+✅ Auth (email + Google) qua Supabase · Onboarding · **Spin cá nhân** · **Group spin (max 20, mutual opt-in, vote chấp nhận)** · **Locket camera-only** · Locket feed (cá nhân + nhóm + public) · Profile công khai (grid locket `visibility=public`) · **Thêm quán user-submitted** (chờ steward duyệt) · **Steward dashboard** (duyệt quán) · Google Places lookup/seed.
+
+❌ Để **v1.2**: AI moderation text, AI gợi ý khẩu vị. Để **v2.0**: gamification/streak, chat trong app, AI Food Advisor, Wear OS, đặt hàng.
+
+## 8. Trạng thái repo
+
+- Branch `main`, 3 commits, sạch.
+- Chỉ có tài liệu: `brand/brand.md`, `brand/FOOD-ROULETTE-SITEMAP.md`, `brand/prompts.md` (file này), `Content/{feature,pricing,solution}.docx`. Thư mục `Food Roulette-web/`, `Videos/`, `ContentViral/` là placeholder.
+- **Chưa có code**. Giai đoạn pre-implementation.
+
+## 9. Luồng người dùng chính
+
+**Luồng 1 — Đi ăn nhóm (USP):** Mở app → Chọn nhóm → "Quay chung" → Cả nhóm xem bánh xe realtime → Kết quả hiện cùng lúc → Mỗi người vote "Chấp nhận" / "Quay lại" → Đa số chấp nhận → App đưa đường đi.
+
+**Luồng 2 — Locket (chụp & chia sẻ):** Ăn xong tại quán → Mở app → "Tạo locket" → Chụp ảnh (không có nút upload) → App tự gắn GPS + timestamp → Viết ghi chú ngắn → Chọn quán + visibility → Đăng → Bạn bè thấy trong feed chronological.
+
+**Luồng 3 — Khám phá quán mới:** Cần thêm quán mới → "Thêm quán" → Check GPS → Nếu không có trên Google Places → User điền form → `pending` → Steward duyệt → hiện lên bản đồ.
+
+## 10. Data model (TypeScript)
+
+```typescript
+interface User {
+  id: string;                       // uuid
+  email: string;
+  display_name_private: string;     // tên trong nhóm bạn
+  display_name_public: string;      // tên trên profile công khai
+  username: string;                 // unique handle
+  public_id: string;                // immutable, dùng cho URL
+  avatar_url?: string;
+  bio?: string;
+  is_steward: boolean;
+  created_at: Date;
+  preferences: { cuisines: string[]; price_range: 1|2|3|4; dietary: string[] };
+}
+interface Friendship { id: string; user_a: string; user_b: string; status: 'pending'|'accepted'|'blocked'; requested_by: string; created_at: Date; accepted_at?: Date; }
+interface Group { id: string; name: string; owner_id: string; member_ids: string[]; created_at: Date; } // max 20 member_ids
+interface Restaurant {
+  id: string; source: 'google_places'|'user_submitted'; google_place_id?: string;
+  name: string; address: string; location: GeoJSON<Point>;          // PostGIS geography(Point,4326)
+  cuisine: string[]; price_range: 1|2|3|4; rating_avg?: number; photos: string[];
+  status: 'approved'|'pending'|'rejected'|'merged';
+  submitted_by?: string; approved_by?: string; created_at: Date;
+}
+interface Locket {
+  id: string; user_id: string; restaurant_id?: string; dish_name?: string;
+  image_url: string; thumbnail_url: string;
+  note?: string; rating?: number;
+  visibility: 'private'|'friends'|'public';
+  captured_at: Date; captured_gps?: GeoJSON<Point>;
+  device_hash: string;               // anonymized
+  group_id?: string; status: 'active'|'removed'|'reported'; created_at: Date;
+}
+interface Spin {
+  id: string; user_id: string; group_id?: string;       // null = cá nhân
+  filters: { cuisines?: string[]; price_range?: number[]; radius_km: number; dietary?: string[] };
+  result_restaurant_id: string;
+  votes?: { user_id: string; vote: 'accept'|'respin'; at: Date }[];   // cho group spin
+  created_at: Date;
+}
+interface RestaurantSubmission {
+  id: string; restaurant_id: string; submitted_by: string; submitted_at: Date;
+  reviewed_by?: string; review_notes?: string;
+  decision?: 'approved'|'rejected'|'merged_into'; merged_with_id?: string;
+}
+```
+
+## 11. Ràng buộc & invariants
+
+1. `Group.member_ids.length <= 20`.
+2. `Locket.image_url` chỉ nhận từ endpoint upload của app — backend từ chối nếu thiếu `device_hash` hoặc `captured_at` lệch server time > 60s.
+3. `Locket.visibility='public'` hiển thị trên profile công khai, **không** lộ `display_name_private`.
+4. `Restaurant.source='user_submitted'` chỉ xuất hiện trong roulette sau khi `status='approved'`.
+5. `Friendship` mutual: 2 bên đều accepted mới là bạn.
+6. `User.public_id` immutable sau khi tạo.
+7. Camera permission phải được xin trước khi vào capture screen.
+8. EXIF gốc của ảnh bị strip trước khi lưu — server chỉ giữ metadata chuẩn hoá.
+
+## 12. Câu trả lời của bạn
+
+Hãy xác nhận bạn đã hiểu bằng cách:
+1. Tóm tắt lại USP của Food Roulette trong 3-5 dòng.
+2. Nêu stack chính (mobile + backend + DB).
+3. Nêu 3 invariants quan trọng nhất.
+4. Hỏi lại tôi 1-2 câu nếu có điểm chưa rõ trước khi bắt tay vào task.
+```
+
+---
+
+## §1 · Định vị & Đối tượng (mở rộng)
+
+### Một câu định vị
+> *"Food Roulette — quay là ra, ăn là ghiền."*
+
+### Khẩu hiệu gốc
+> *"Không biết ăn gì? Để vòng quyết định."*
+
+### Positioning statement
+Food Roulette là ứng dụng **giải quyết "nghịch lý lựa chọn"** khi đi ăn — khi có quá nhiều quán nhưng không biết chọn cái nào. Khác với Foody/ShopeeFood (chỉ liệt kê), Food Roulette biến việc chọn quán thành **một trải nghiệm vui, ngẫu nhiên và có cá tính**.
+
+### Lời hứa thương hiệu
+> *"Mỗi lần quay là một cuộc phiêu lưu ẩm thực — không bao giờ nhàm chán."*
+
+### Tệp người dùng chính
+- **Gen Z & Millennials (18–30 tuổi)**, sinh viên + nhân viên văn phòng tại các thành phố lớn.
+- **Nhóm bạn / cặp đôi / gia đình** đang "không biết ăn gì".
+- **Người thích khám phá** quán mới nhưng lười lọc.
+
+### 4 nhóm người dùng được nhắm trong marketing
+1. Người độc thân
+2. 👫 Cặp đôi
+3. 👨‍👩‍👧‍👦 Gia đình
+4. 👥 Nhóm bạn
+
+---
+
+## §2 · Pain Points cần giải quyết
+
+| Vấn đề | Mô tả |
+|--------|-------|
+| 🤔 **Không biết ăn gì** | Quá nhiều lựa chọn hoặc không có ý tưởng |
+| ⏰ **Tốn thời gian quyết định** | Scroll menu, hỏi bạn bè mất 30 phút (67% smartphone user mất >15 phút) |
+| 😤 **Cãi nhau khi đi nhóm** | 8/10 cặp đôi xung đột vì không thống nhất chỗ ăn |
+| 📸 **Muốn chia sẻ món ăn** | Thấy món ngon nhưng không biết giới thiệu sao |
+| ⭐ **Cần review thật** | Review trên mạng thường không đáng tin |
+| 📍 **Bỏ lỡ quán ngon** | Quán nằm trong hẻm, không quảng cáo, không có trên Google Maps |
+
+**Số liệu tham chiếu từ `Content/solution.docx`:**
+- Dân văn phòng mất trung bình **2.5 giờ/tuần** chỉ để chọn địa điểm ăn.
+- Mỗi cuộc "tranh luận ăn gì" có **3–10 người** tham gia.
+- Sau 30 phút cãi nhau, **80% quay về canteen** hoặc 2-3 quán quen.
+
+---
+
+## §3 · Tính năng sản phẩm (từ `Content/feature.docx`)
+
+### 1. 🎰 Roulette thông minh — Smart Food Decision Engine
+- **Vấn đề:** Mất 20–30 phút/bữa để chọn quán, kết quả là vẫn quay về quán cũ.
+- **Luồng:** Mở app → Nhấn SPIN lớn → (tùy chọn) chỉnh filter → Bánh xe quay animation 3D → Hiện kết quả.
+- **Filter:** Cuisine (Việt, Nhật, Hàn, Thái, Ý, Ấn Độ…), khoảng cách slider 1–10 km, mức giá $/$$/$$$/$$$$ (VNĐ: <50K / 50–150K / 150–300K / >300K), chế độ ăn (Chay, Vegan, Halal, Keto, Gluten-free).
+- **Hành động sau spin:** Spin lại · Xem chi tiết · Lưu vào Locket · Chia sẻ.
+- **Pro filter:** Rating tối thiểu (4+), thời gian mở cửa, tiêu chí đặc biệt (chỗ ngoài trời, phù hợp nhóm đông, yên tĩnh).
+- **Metric mục tiêu:** thời gian quyết định giảm từ 25 phút xuống ≤ 3 giây · spin → ghé thăm 35% · discovery rate 40% tháng đầu.
+
+### 2. 🔒 Locket (gọi là "Taste Board" trong docx cũ) — Camera-only
+- **Vấn đề:** Lưu ảnh món ngon qua Zalo/chat → trôi mất; bookmark Google Maps → không có review; Notes app → không chia sẻ được.
+- **Khác biệt v1.0:** **camera-only** — không có nút upload từ thư viện.
+- **Tạo:** Đặt tên board (vd: "Quán ngon Sài Gòn", "Bữa trưa team") → Thêm món (tìm quán hoặc thêm thủ công) → Chụp ảnh từ camera → Ghi chú + rating 1–5 + tags → Chọn visibility (private / friends / public).
+- **Chia sẻ & tương tác:**
+  - Nút "Tôi cũng muốn ăn!" → bạn bè lưu vào board của họ.
+  - QR Code · Link chia sẻ · Nhúng web.
+- **Mẫu phổ biến:** "Quán ngon quanh công ty" · "Ăn vặt dưới 30K" · "Cuối tuần gia đình" · "Review từ food blogger".
+- **Metric mục tiêu:** viral loop 2.4 người/board · 8.5 món/board trung bình · engagement 68%.
+
+### 3. ⭐ Review thật — Community-Verified Food Reviews
+- **Vấn đề:** Review Google/Facebook bị nghi quảng cáo trá hình · ảnh không đại diện · không biết ai viết.
+- **Cách viết:** Tìm quán → Đánh giá tổng 1–5 sao → Đánh giá chi tiết (Vị · Phục vụ · Không gian · Giá) → Nội dung + ảnh (tối đa 5) + tags (tối đa 5).
+- **Bộ lọc:** Gần tôi (bán kính 5 km) · Xu hướng · Mới nhất · Theo dõi.
+- **Trust system:** Avatar + username thật · Stats profile · Badge verified (xác minh SĐT) · Report system.
+- **Metric mục tiêu:** trust > 85% (vs ~40% trên nền tảng có quảng cáo) · chuyển đổi đọc review → ghé quán 2.1× cao hơn.
+
+### 4. 📍 Khám phá xung quanh — Nearby Discovery Engine
+- **Vấn đề:** Luôn ăn quán cũ · bỏ lỡ quán trong hẻm · review từ xa không phù hợp.
+- **Bản đồ tương tác:** Pin màu theo rating (xanh 4.5+ · vàng 3.5–4.4 · đỏ <3.5) · Filter (loại món, đang mở cửa, đang KM).
+- **Gợi ý thông minh:** theo vị trí · theo Taste Board · theo xu hướng · theo bữa (sáng/trưa/chiều/tối).
+- **Metric mục tiêu:** discovery 40% tháng đầu · 3 quán mới/tháng · trung bình 1.8 km.
+
+### 5. 👤 Hồ sơ ẩm thực cá nhân — Personal Taste Profile
+- **Vấn đề:** Không có nơi thể hiện "gu ăn uống" · review cũ trôi mất · thiếu gamification.
+- **Taste Profile tự động** (radar chart) dựa trên: lịch sử Spin · Review · Taste Board.
+- **Hiển thị:** Avatar · Stats · Taste Radar · Achievements · Timeline hoạt động.
+- **Badges v1.0 chưa có (để v2.0):** 🏃 Spinner (100 spin) · 📝 Reviewer (10 review) · 🔒 Board Master (5 board) · 🗺️ Explorer (10 quán mới) · ⭐ Helpful (50 useful) · 🔥 Streak (7 ngày liên tiếp).
+
+### Feature Matrix (từ `Content/feature.docx`)
+
+| Tính năng | Free | Pro | Business |
+|-----------|:----:|:---:|:--------:|
+| Spin Roulette | 5/ngày | ∞ | ∞ |
+| Locket / Taste Board | 1 board, 10 món | ∞ | ∞ |
+| Review thật | 3/tháng | ∞ | ∞ + phản hồi |
+| Khám phá xung quanh | 3 km | 20 km | 20 km |
+| Bộ lọc nâng cao | ✗ | ✓ | ✓ |
+| Không quảng cáo | ✗ | ✓ | ✓ |
+| Taste Profile đầy đủ | ✗ | ✓ | ✓ |
+| Dashboard analytics | ✗ | ✗ | ✓ |
+| Ưu tiên Roulette | ✗ | ✗ | ✓ |
+| Chạy khuyến mãi | ✗ | ✗ | ✓ |
+| Trang nhà hàng chính thức | ✗ | ✗ | ✓ |
+
+---
+
+## §4 · Pricing (từ `Content/pricing.docx`)
+
+> **Lưu ý:** pricing v1.0 đã có trong docx nhưng **chưa được thống nhất** có triển khai trong v1.0 của MVP hay không. Khi code, đề xuất làm **free + tùy chọn Pro/Business sau**.
+
+### 3 gói
+
+| Gói | Giá | Đối tượng |
+|-----|-----|-----------|
+| **Free** | 0đ / mãi mãi | Người dùng cá nhân muốn thử spin, đọc review |
+| **Pro** | 59.000đ / tháng | Cặp đôi, nhóm bạn, food blogger, dân VP cần spin không giới hạn |
+| **Business** | 299.000đ / tháng | Nhà hàng, quán ăn muốn tiếp cận khách hàng |
+
+### ROI cho Pro (theo docx)
+- Tiết kiệm ~600.000đ/tháng (12 giờ × 50.000đ/giờ).
+- ROI = **916%** · Hoàn vốn **< 3 ngày**.
+
+### ROI cho Business (theo docx)
+- Doanh thu mới ~12.000.000đ/tháng + tiết kiệm ads ~1.700.000đ.
+- ROI = **4.482%** · Hoàn vốn **< 1 ngày**.
+
+### FAQ trích từ docx
+- Có thể đổi gói bất kỳ lúc (nâng cấp tính theo ngày, hạ cấp từ chu kỳ sau).
+- Pro tự động gia hạn qua ATM/Visa/Momo, hủy trong Cài đặt.
+- Pro có **7 ngày dùng thử miễn phí**, không cần nhập thẻ.
+- Review chỉ từ người dùng đã verify SĐT (chú thích: v1.0 có thể chưa áp dụng).
+
+---
+
+## §5 · Solution (từ `Content/solution.docx`) — câu chuyện theo nhóm đối tượng
+
+### 1. Dân văn phòng & công sở
+- **Nỗi đau:** 12 giờ trưa — 30 phút cãi nhau, cuối cùng vẫn quay về canteen.
+- **Giải pháp:** Spin 3 giây, filter trong bán kính 500m–1km, giá $ hoặc $$.
+- **Kết quả kỳ vọng:** tiết kiệm 2.5 giờ/tuần.
+
+### 2. Sinh viên & ký túc xá
+- **Nỗi đau:** Ngân sách hẹn hẹp, ăn quán lạ sợ mất vệ sinh, hay phải ăn cùng món.
+- **Giải pháp:** Filter giá $ (<50K), board "Ăn vặt dưới 30K", review từ bạn cùng khu.
+- **Kết quả kỳ vọng:** giảm lo lắng, khám phá quán mới an toàn.
+
+### 3. Gia đình có con nhỏ
+- **Nỗi đau:** Con khó tính, cần không gian phù hợp, đỗ xe khó.
+- **Giải pháp:** Filter "Phù hợp nhóm đông", "Yên tĩnh", "Có chỗ ngồi ngoài trời", board "Cuối tuần gia đình".
+- **Kết quả kỳ vọng:** bớt stress bữa ăn gia đình.
+
+### 4. Ngành F&B — Nhà hàng & quán ăn
+- **Nỗi đau:** Quán mới mở thiếu visibility, khách đến không đều.
+- **Giải pháp (gói Business):** Ưu tiên xuất hiện trên Roulette + dashboard analytics + ưu đãi + badge "Đối tác xác thực" + QR Code riêng.
+- **Kết quả kỳ vọng:** 100+ khách mới/tháng.
+
+---
+
+## §6 · Sitemap ứng dụng (từ `brand/FOOD-ROULETTE-SITEMAP.md`)
+
+### Trang chính (trong app)
+- `/` — Landing page trong app (intro, hero)
+- `/spin` — Trang roulette (cá nhân + group)
+- `/lockets` — Danh sách Locket của tôi / được chia sẻ / khám phá
+- `/lockets/[id]` — Chi tiết Locket
+- `/reviews` — Trang reviews cộng đồng
+- `/profile/:username` hoặc `/u/:public_id` — Profile công khai
+- `/dashboard` — Dashboard user (locket của tôi, lịch sử spin, cài đặt)
+- `/auth/login` `/auth/register` — Auth
+- `/steward` — Steward dashboard (duyệt quán)
+- `/settings` — Cài đặt
+
+### Landing page web (marketing tĩnh)
+Hero → Vấn đề → Cách hoạt động (3 bước) → Tính năng → Đối tượng → Social proof → Đăng ký → FAQ → CTA cuối.
+
+---
+
+## §7 · Design Tokens (từ `brand/brand.md`, đồng bộ với sitemap §10)
+
+### Màu chính (Primary — Earthy)
+```
+--brand-primary        #3D2314  Espresso (logo, text chính, CTA)
+--brand-primary-dark   #5C3317  Dark Roast (header, footer, card nổi)
+--brand-primary-soft   #8B4513  Saddle Brown (icon, border mạnh)
+```
+
+### Màu accent (vàng — nổi bật)
+```
+--brand-accent         #C68E17  Golden (CTA, rating, highlight)
+--brand-accent-soft    #D4A574  Caramel (button secondary, hover)
+--brand-accent-bg      #F5DEB3  Butter Yellow (section bg, tag)
+```
+
+### Màu nền & chữ
+```
+--brand-bg             #FDF5E6  Cream (body default)
+--brand-bg-soft        #FAF0E6  Linen (section xen kẽ)
+--brand-bg-card        #F5F0EB  Beige (card)
+--brand-text           #2C1810  Brown 900 (text chính)
+--brand-text-muted     #9C8B7A  Warm Gray (caption)
+--brand-border         #D4C5B5  Border Brown (divider)
+```
+
+### Dark mode
+```
+--brand-bg-dark        #1A0F0A  Dark Espresso
+--brand-bg-card-dark   #2D1F15  Dark Roast
+--brand-border-dark    #3D2D25
+--brand-text-dark      #F5F0EB
+--brand-text-muted-dark #B8A090
+```
+
+### Thang nâu (Brown scale)
+```
+Brown 900  #2C1810  Text chính
+Brown 700  #5C3317  Text tiêu đề
+Brown 500  #8B6914  Text phụ
+Brown 300  #C4A77D  Border nhẹ
+Brown 100  #E8DDD0  Background nhẹ
+Brown 50   #F7F2ED  Background chính
+```
+
+### Typography
+```
+Display    Plus Jakarta Sans  48px  weight 800  lh 1.1   Hero title
+H1         Plus Jakarta Sans  36px  weight 700  lh 1.2   Page title
+H2         Plus Jakarta Sans  28px  weight 700  lh 1.25  Section title
+H3         Plus Jakarta Sans  22px  weight 600  lh 1.3   Card title
+H4         Plus Jakarta Sans  18px  weight 600  lh 1.4   Sub section
+Body Large Inter             18px  weight 400  lh 1.6   Mô tả dài
+Body       Inter             16px  weight 400  lh 1.5   Nội dung chính
+Body Small Inter             14px  weight 400  lh 1.5   Caption
+Caption    Inter             12px  weight 500  lh 1.4   Tag, label
+Button     Inter             16px  weight 600  lh 1.0   CTA
+```
+
+### Do / Don't
+```
+✅ DO                                       ❌ DON'T
+───────────────────────────────────────    ─────────────────────────────────────
+Dùng màu chính cho CTA                     Đổi màu logo
+Giữ clear space quanh logo                 Vẽ thêm chiết tiết vào logo
+Mix Plus Jakarta + Inter                   Dùng nhiều hơn 3 font
+Nói ngắn, có emoji                         Viết đoạn văn dài
+Xưng "mình – bạn"                          Xưng "quý khách"
+```
+
+---
+
+## §8 · Messaging Pillars (3 trụ cột copy)
+
+### 🌀 Pillar 1 — "Chọn nhanh"
+- **Headline:** *"Không biết ăn gì? Quay một cái."*
+- **Sub:** *"Quay vài giây — có quán ngay."*
+- Nhấn mạnh tốc độ, giải quyết "lãng phí thời gian".
+
+### 🎲 Pillar 2 — "Khám phá có chủ đích"
+- **Headline:** *"Biết đâu có quán ngon gần bạn."*
+- **Sub:** *"Quán mới mỗi tuần, không cần tìm."*
+- Khuyến khích thử mới, có lọc theo sở thích.
+
+### 🍽️ Pillar 3 — "Theo khẩu vị"
+- **Headline:** *"Chọn theo điều kiện của bạn."*
+- **Sub:** *"Có quán ưng ý — không cần đoán."*
+- Filter theo vị trí, ngân sách, loại món.
+
+---
+
+## §9 · Open questions còn lại (cần user quyết định)
+
+- [ ] **Steward role:** `is_steward` boolean trên `User`, hay bảng `steward_team` riêng?
+- [ ] **Mời vào group:** bạn bè có thể mời, hay chỉ owner mới thêm thành viên?
+- [ ] **Vòng đời group:** tồn tại vĩnh viễn, hay có thể "giải tán" sau khi quay?
+- [ ] **Vòng đời ảnh locket:** tự hủy 24h, hay giữ vĩnh viễn?
+- [ ] **Push notification:** bật/tắt riêng từng người bạn?
+- [ ] **`device_hash` reset** khi user đổi máy — chiến lược chống false-positive?
+- [ ] **Pricing** (Free/Pro/Business): có triển khai trong v1.0 không, hay để v1.2?
+
+---
+
+## Phụ lục · Tài liệu liên quan trong repo
+
+| File | Mô tả |
+|------|-------|
+| `brand/brand.md` | Brand Kit đầy đủ (định vị, màu, font, tone, logo, messaging) |
+| `brand/FOOD-ROULETTE-SITEMAP.md` | Sitemap & đặc tả thiết kế chi tiết (v2.2) |
+| `brand/prompts.md` | File này — tổng hợp dạng prompt |
+| `Content/feature.docx` | Mô tả 5 tính năng chính + metric |
+| `Content/pricing.docx` | 3 gói Free/Pro/Business + ROI |
+| `Content/solution.docx` | Câu chuyện theo 4 nhóm đối tượng |
+| `Food Roulette-web/app/` | (placeholder) sẽ chứa source |
+| `Food Roulette-web/content/` | (placeholder) sẽ chứa content MD/JSON |
+| `Videos/` | (placeholder) sẽ chứa video demo |
+| `ContentViral/` | (placeholder) sẽ chứa content viral |
+
+---
+
+*Lưu ý:*
+- *Cập nhật file này mỗi khi thay đổi quyết định lớn. Nếu AI đọc sai, kiểm tra file này trước.*
+- *Mọi mâu thuẫn giữa file này và các tài liệu khác: ưu tiên `brand/prompts.md` → `brand/brand.md` → `brand/FOOD-ROULETTE-SITEMAP.md` → `Content/*.docx`.*
+- *Phiên bản: 2.2 · Ngày: 2026-07-24.*
