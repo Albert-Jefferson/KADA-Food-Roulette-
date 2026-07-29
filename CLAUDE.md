@@ -116,6 +116,43 @@ Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 2. **AI đang đọc nhầm spec?** Trỏ AI về `brand/prompts.md` và `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 3. **Cập nhật spec?** Sửa `brand/prompts.md` trước (single-source-of-truth), rồi sửa các file liên quan.
 
+## 10. Dataset Reference
+
+### googleplaystore_cleaned.csv
+
+**Source:** `i:\My Drive\Bài Tập\AI-FullStack\Module 4\Dataset\googleplaystore_cleaned.csv`
+
+**Mô tả:** Dữ liệu ứng dụng Google Play Store đã chuẩn hóa (~8,892 dòng)
+
+| # | Tên cột | Kiểu | Mô tả |
+|---|---------|------|--------|
+| 1 | `App` | str | Tên ứng dụng |
+| 2 | `Category` | str | Danh mục (ART_AND_DESIGN, FAMILY, GAME...) |
+| 3 | `Rating` | float64 | Đánh giá (0-5) |
+| 4 | `Reviews` | int64 | Số lượt đánh giá |
+| 5 | `Size` | str | Kích thước gốc (có M, k, Varies...) |
+| 6 | `Type` | str | Free / Paid |
+| 7 | `Price` | str | Giá gốc (có $, 0 cho miễn phí) |
+| 8 | `Content Rating` | str | Phân loại nội dung (Everyone, Teen...) |
+| 9 | `Genres` | str | Thể loại (có ; cho multi-category) |
+| 10 | `Last Updated` | str | Ngày cập nhật gốc (dạng text) |
+| 11 | `Current Ver` | str | Phiên bản hiện tại |
+| 12 | `Android Ver` | str | Phiên bản Android tối thiểu |
+| 13 | `Size_MB` | float64 | **Cột mới** - Kích thước đã chuẩn hóa (MB) |
+| 14 | `Installs_Num` | int64 | **Cột mới** - Số lượt cài đặt (đã bỏ +, ,) |
+| 15 | `Price_Num` | float64 | **Cột mới** - Giá đã chuẩn hóa (USD, đã bỏ $) |
+| 16 | `Last_Updated_Date` | datetime64 | **Cột mới** - Ngày cập nhật (datetime) |
+| 17 | `Main_Genre` | str | **Cột mới** - Thể loại chính (lấy phần trước `;`) |
+
+**Các cột mới được tạo trong quá trình chuẩn hóa:** `Size_MB`, `Installs_Num`, `Price_Num`, `Last_Updated_Date`, `Main_Genre`
+
+**Các bước chuẩn hóa đã thực hiện:**
+- Xóa 483 dòng trùng
+- Xóa dòng Reviews không phải số
+- Xóa dòng Rating ngoài [0, 5]
+- Xóa cột `Installs` gốc (đã thay bằng `Installs_Num`)
+- Điền Rating NaN bằng trung bình theo Category
+
 ---
 
-*Phiên bản: 1.0 · Cập nhật: 2026-07-24 · Pre-implementation*
+*Phiên bản: 1.1 · Cập nhật: 2026-07-29 · Pre-implementation*
