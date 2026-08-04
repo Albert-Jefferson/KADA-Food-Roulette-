@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 
 function spawnConfetti(containerId: string) {
@@ -20,6 +20,11 @@ function spawnConfetti(containerId: string) {
 
 export default function SpinResultScreen() {
   const navigate = useNavigate()
+  const location = useLocation()
+  
+  // Custom dish passed from GroupSpinScreen
+  const customDish = location.state?.customDish
+  
   useEffect(() => { spawnConfetti('confetti-container') }, [])
 
   return (
@@ -39,9 +44,13 @@ export default function SpinResultScreen() {
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-50 overflow-hidden" id="confetti-container"/>
 
         {/* Hero Image */}
-        <div className="relative w-full h-[50vh] md:h-[60vh]">
-          <img alt="Bún Bò Bà Luân" className="absolute inset-0 w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPXkp_PqwHdeonWUy3cMkUvQLu0I6vRU2kzzfUP4Ni8SabeF7Cq5dl3DyJCibawkf_uUpTQdYEfyAoSNbTq49ri9QImqQ0KfkTvZTuYUz6qZBJWbHakxaJFSQ-e7sbekjgT2_-VyiccCC1q3A7vrNR2cjByhNlNbQhXuqD1QIUIB-MpLFLY-xIpwTH5H2jBVSo5a4nzxfa5hqSdJJKbz_zqpqUx8is_ZzYOYnevY8LPAUsR7S75qjNhQ"/>
+        <div className={`relative w-full h-[50vh] md:h-[60vh] ${customDish ? 'bg-primary-container flex items-center justify-center' : ''}`}>
+          {!customDish ? (
+            <img alt="Bún Bò Bà Luân" className="absolute inset-0 w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPXkp_PqwHdeonWUy3cMkUvQLu0I6vRU2kzzfUP4Ni8SabeF7Cq5dl3DyJCibawkf_uUpTQdYEfyAoSNbTq49ri9QImqQ0KfkTvZTuYUz6qZBJWbHakxaJFSQ-e7sbekjgT2_-VyiccCC1q3A7vrNR2cjByhNlNbQhXuqD1QIUIB-MpLFLY-xIpwTH5H2jBVSo5a4nzxfa5hqSdJJKbz_zqpqUx8is_ZzYOYnevY8LPAUsR7S75qjNhQ"/>
+          ) : (
+            <span className="material-symbols-outlined text-[120px] text-primary opacity-20 absolute" style={{fontVariationSettings:"'FILL' 1"}}>restaurant</span>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"/>
           <div className="absolute top-0 left-0 w-full p-margin-mobile flex justify-between items-center z-10 md:hidden">
             <button className="bg-surface-white/20 backdrop-blur-md p-2 rounded-full text-surface-white hover:bg-surface-white/40 transition-colors" onClick={()=>navigate('/')}>
@@ -54,23 +63,31 @@ export default function SpinResultScreen() {
           <div className="absolute bottom-0 left-0 w-full p-margin-mobile flex flex-col gap-stack-sm z-10">
             <div className="flex gap-2 mb-1">
               <span className="bg-primary px-2 py-1 rounded-full text-on-primary font-label-strong text-[10px] uppercase tracking-wider">It's a Match!</span>
-              <span className="bg-surface-white/20 backdrop-blur-md px-2 py-1 rounded-full text-surface-white font-label-strong text-[10px] uppercase tracking-wider border border-surface-white/30">Vietnamese</span>
+              {customDish ? (
+                <span className="bg-surface-white/20 backdrop-blur-md px-2 py-1 rounded-full text-surface-white font-label-strong text-[10px] uppercase tracking-wider border border-surface-white/30">Custom</span>
+              ) : (
+                <span className="bg-surface-white/20 backdrop-blur-md px-2 py-1 rounded-full text-surface-white font-label-strong text-[10px] uppercase tracking-wider border border-surface-white/30">Vietnamese</span>
+              )}
             </div>
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-surface-white drop-shadow-md">Bún Bò Bà Luân</h1>
-            <div className="flex items-center gap-4 text-surface-white/90 font-body-md text-caption">
-              <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full border border-surface-white/20">
-                <span className="material-symbols-outlined text-streak-gold text-[16px]">star</span>
-                <span className="font-label-strong">4.5</span><span className="opacity-75">(128)</span>
+            <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-surface-white drop-shadow-md">
+              {customDish ? customDish.name : 'Bún Bò Bà Luân'}
+            </h1>
+            {!customDish && (
+              <div className="flex items-center gap-4 text-surface-white/90 font-body-md text-caption">
+                <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full border border-surface-white/20">
+                  <span className="material-symbols-outlined text-streak-gold text-[16px]">star</span>
+                  <span className="font-label-strong">4.5</span><span className="opacity-75">(128)</span>
+                </div>
+                <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full border border-surface-white/20">
+                  <span className="material-symbols-outlined text-[16px]">directions_walk</span>
+                  <span className="font-label-strong">400m</span>
+                </div>
+                <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full border border-surface-white/20">
+                  <span className="material-symbols-outlined text-[16px]">payments</span>
+                  <span className="font-label-strong">$$</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full border border-surface-white/20">
-                <span className="material-symbols-outlined text-[16px]">directions_walk</span>
-                <span className="font-label-strong">400m</span>
-              </div>
-              <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full border border-surface-white/20">
-                <span className="material-symbols-outlined text-[16px]">payments</span>
-                <span className="font-label-strong">$$</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
