@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-on-background font-body-md min-h-screen flex flex-col relative overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .squishy-button {
+    border-bottom: 3px solid #92001b; /* on-primary-fixed-variant */
+    transition: all 0.1s ease;
+  }
+  .squishy-button:active {
+    transform: translateY(2px);
+    border-bottom: 1px solid #92001b;
+  }
+  .btn-squish {
+    border-bottom: 4px solid #b52330;
+    transition: all 0.1s ease;
+  }
+  .btn-squish:active {
+    border-bottom-width: 0px;
+    transform: translateY(4px);
+  }
+  .squishy-card {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
