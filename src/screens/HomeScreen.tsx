@@ -1,11 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { useRef, useState } from 'react'
+import { useHomeFilters } from '../hooks/useHomeFilters'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
   const wheelRef = useRef<HTMLDivElement>(null)
   const [isSpinning, setIsSpinning] = useState(false)
   const [rotation, setRotation] = useState(0)
+  
+  const { filters, setFilterActive } = useHomeFilters()
 
   const handleSpin = () => {
     if (isSpinning) return
@@ -68,17 +71,18 @@ export default function HomeScreen() {
 
         {/* Filters */}
         <div className="w-full max-w-md mb-stack-lg flex flex-col gap-4">
-          {[
-            {label:'Mức giá', opts:['$','$$','$$$','$$$$'], active:'$'},
-            {label:'Khoảng cách', opts:['Gần (<2km)','Trung bình (2-5km)','Xa (>5km)'], active:'Trung bình (2-5km)'},
-            {label:'Gu ẩm thực', opts:['Ăn no','Ăn nhanh','Cơm','Đồ nước'], active:'Cơm'},
-            {label:'Khẩu vị', opts:['Chua','Cay','Mặn','Ngọt'], active:'Cay'},
-          ].map(f=>(
+          {filters.map(f=>(
             <div key={f.label} className="flex flex-col gap-2">
               <span className="font-label-strong text-on-surface-variant text-caption px-2">{f.label}</span>
               <div className="flex gap-2 overflow-x-auto pb-1 px-2 no-scrollbar">
                 {f.opts.map(o=>(
-                  <button key={o} className={`px-4 py-1.5 rounded-full font-label-strong text-sm whitespace-nowrap ${o===f.active?'bg-primary text-on-primary':'bg-surface-container border border-subtle-gray text-on-surface-variant'}`}>{o}</button>
+                  <button 
+                    key={o} 
+                    onClick={() => setFilterActive(f.label, o)}
+                    className={`px-4 py-1.5 rounded-full font-label-strong text-sm whitespace-nowrap ${o===f.active?'bg-primary text-on-primary':'bg-surface-container border border-subtle-gray text-on-surface-variant'}`}
+                  >
+                    {o}
+                  </button>
                 ))}
               </div>
             </div>
