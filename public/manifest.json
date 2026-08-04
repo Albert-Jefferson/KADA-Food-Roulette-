@@ -1,0 +1,15 @@
+{
+  "name": "Food Roulette",
+  "short_name": "FoodRoulette",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8ef",
+  "theme_color": "#b52330",
+  "icons": [
+    {
+      "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuDzdpLQwbET5oIrmx2HMR1agserG2CL_KEaDkKAKrZQ4bwvgqQBRvGZWQtc_o8tuee-kgx95PW6wPPag1Zq2uwUVnVuw9JbCqz_A9wD7n0DHER6rpgUgj-Pl9SG3adVWE-IVhwikrN1xFki09DLu0ukA4J7ode5PTSdZuFBo1mmC6_NI_MLf8jzdD6d5jPN16hz0_7d6hEsT2aZ7i6PALsf8g1Mgrf9LuoAkEPA5awpT0WtUgOytqVycg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

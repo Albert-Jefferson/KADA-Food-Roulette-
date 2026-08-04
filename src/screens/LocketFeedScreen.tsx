@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useCamera } from '../hooks/useCamera'
 
 const LOCKETS = [
   {
@@ -17,6 +18,7 @@ const LOCKETS = [
 
 export default function LocketFeedScreen() {
   const navigate = useNavigate()
+  const { videoRef, canvasRef, isCameraOpen, startCamera, stopCamera, takePhoto } = useCamera()
   return (
     <div className="bg-background text-on-surface font-body-md antialiased min-h-screen pb-[80px]">
       <header className="w-full top-0 sticky z-40 bg-background">
@@ -90,6 +92,49 @@ export default function LocketFeedScreen() {
           </article>
         ))}
       </main>
+
+      {/* Floating Action Button for Camera */}
+      <button 
+        className="fixed bottom-[100px] right-4 w-16 h-16 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40"
+        onClick={startCamera}
+      >
+        <span className="material-symbols-outlined text-3xl">photo_camera</span>
+      </button>
+
+      {/* Full-screen Camera Overlay */}
+      {isCameraOpen && (
+        <div className="fixed inset-0 bg-black z-[100] flex flex-col">
+          <div className="flex justify-between items-center p-4 pt-safe absolute top-0 w-full z-10 bg-gradient-to-b from-black/50 to-transparent">
+            <button className="text-white p-2" onClick={stopCamera}>
+              <span className="material-symbols-outlined text-3xl">close</span>
+            </button>
+            <span className="text-white font-headline-md">Locket</span>
+            <div className="w-10"></div>
+          </div>
+          
+          <div className="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
+            <video 
+              ref={videoRef} 
+              autoPlay 
+              playsInline 
+              className="w-full h-full object-cover"
+            />
+            <canvas ref={canvasRef} className="hidden" />
+          </div>
+
+          <div className="absolute bottom-0 w-full p-8 pb-safe flex justify-center items-center bg-gradient-to-t from-black/80 to-transparent">
+            <button 
+              className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center bg-transparent active:scale-90 transition-transform"
+              onClick={() => {
+                takePhoto();
+                navigate('/profile');
+              }}
+            >
+              <div className="w-16 h-16 rounded-full bg-white"></div>
+            </button>
+          </div>
+        </div>
+      )}
 
       <nav className="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-white border-t border-subtle-gray shadow-md">
         <div className="flex justify-around items-center px-4 py-2 pb-safe max-w-xl mx-auto">

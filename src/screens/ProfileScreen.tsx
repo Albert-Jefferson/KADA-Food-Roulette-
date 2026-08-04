@@ -1,7 +1,10 @@
 import { useNavigate } from 'react-router-dom'
+import { useLocketPhotos } from '../hooks/useLocketPhotos'
 
 export default function ProfileScreen() {
   const navigate = useNavigate()
+  const { photos } = useLocketPhotos()
+
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen pb-[90px]">
       <header className="w-full top-0 sticky bg-background z-40 px-margin-mobile py-base pt-safe flex justify-between items-center max-w-7xl mx-auto">
@@ -109,17 +112,28 @@ export default function ProfileScreen() {
                 </div>
               </div>
             </div>
-            {[
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuAvytG0FXxSjsRcadn9ZEhYUSfa-ZJ19vIIzvM7TZpD-HqbdtqBfyuE8P06SeT28j8RXSx32MKeV3EA3MjcnQOFqGBqw8hG13vbiQiPI1zCy760-YvYRg4kplGjFBM5iaGIKwX8hLo9QADgN2TFpc4HlaErv0w1guN0oGH79DAIXMukdjUMexDvIHtTtDSPbiqUUybWoqjh8WUSwpbUF8qRK8Ub_u6A8w2zE2FojhTgCVaGDg6BiHI0ow',
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuC5xM8VugMzaTBHDVutxOO_sAm9mQ9s-JbO-P09MSPK5zkcz719fPoo7c4_jpGE-s9hotq5yLnHBqFjbZnL0tujgLsBKJmwDoXTftJUze1SkoQYdcAfY1vyd6FZb5YOXNl0PCsuPKi93CTh0avfXp71c-tNW72tLvmBieJ_eP6YzS5j8g4p_46dTiIxWJcHMTQiqjimPBHsCnHNGC7zq4hC0Ql36l3kLVHrvFxYPN1ckU2B7i4IMFdJlQ'
-            ].map((src,i)=>(
-              <div key={i} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
-                <img alt="locket" className="w-full h-full object-cover" src={src}/>
-                <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-surface-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
-                  <span className="material-symbols-outlined text-[16px] text-primary" style={i===0?{fontVariationSettings:"'FILL' 1"}:{}}>favorite</span>
+            {photos.length > 0 ? (
+              photos.slice(0, 4).map((p, i) => (
+                <div key={p.id} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
+                  <img alt="locket" className="w-full h-full object-cover" src={p.dataUrl}/>
+                  <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-surface-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                    <span className="material-symbols-outlined text-[16px] text-primary" style={i===0?{fontVariationSettings:"'FILL' 1"}:{}}>favorite</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              [
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuAvytG0FXxSjsRcadn9ZEhYUSfa-ZJ19vIIzvM7TZpD-HqbdtqBfyuE8P06SeT28j8RXSx32MKeV3EA3MjcnQOFqGBqw8hG13vbiQiPI1zCy760-YvYRg4kplGjFBM5iaGIKwX8hLo9QADgN2TFpc4HlaErv0w1guN0oGH79DAIXMukdjUMexDvIHtTtDSPbiqUUybWoqjh8WUSwpbUF8qRK8Ub_u6A8w2zE2FojhTgCVaGDg6BiHI0ow',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuC5xM8VugMzaTBHDVutxOO_sAm9mQ9s-JbO-P09MSPK5zkcz719fPoo7c4_jpGE-s9hotq5yLnHBqFjbZnL0tujgLsBKJmwDoXTftJUze1SkoQYdcAfY1vyd6FZb5YOXNl0PCsuPKi93CTh0avfXp71c-tNW72tLvmBieJ_eP6YzS5j8g4p_46dTiIxWJcHMTQiqjimPBHsCnHNGC7zq4hC0Ql36l3kLVHrvFxYPN1ckU2B7i4IMFdJlQ'
+              ].map((src,i)=>(
+                <div key={i} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
+                  <img alt="locket" className="w-full h-full object-cover" src={src}/>
+                  <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-surface-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                    <span className="material-symbols-outlined text-[16px] text-primary" style={i===0?{fontVariationSettings:"'FILL' 1"}:{}}>favorite</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
           <button className="w-full mt-4 py-3 bg-surface-container-low border border-subtle-gray rounded-xl font-label-strong text-on-background hover:bg-surface-container-high transition-colors">Xem tất cả locket</button>
         </section>
