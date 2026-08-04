@@ -5,16 +5,25 @@ export function useCamera() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
   const { addPhoto } = useLocketPhotos();
+
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+      videoRef.current.play().catch(e => console.error("Play error:", e));
+    }
+  }, [isCameraOpen, stream]);
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const newStream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } 
+      }).catch(async () => {
+        // Fallback for devices without environment camera (like many webcams)
+        return await navigator.mediaDevices.getUserMedia({ video: true });
       });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
+      setStream(newStream);
       setIsCameraOpen(true);
     } catch (err) {
       console.error("Error accessing camera: ", err);
@@ -23,10 +32,9 @@ export function useCamera() {
   };
 
   const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      const tracks = stream.getTracks();
-      tracks.forEach(track => track.stop());
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
     }
     setIsCameraOpen(false);
   };
@@ -43,7 +51,9 @@ export function useCamera() {
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        addPhoto(dataUrl);
+        if (dataUrl && dataUrl.length > 10) {
+          addPhoto(dataUrl);
+        }
         stopCamera();
       }
     }
