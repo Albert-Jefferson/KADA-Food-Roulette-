@@ -210,6 +210,53 @@ Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 2. **AI đang đọc nhầm spec?** Trỏ AI về `brand/prompts.md` và `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 3. **Cập nhật spec?** Sửa `brand/prompts.md` trước (single-source-of-truth), rồi sửa các file liên quan.
 
+## 11. Vibe Coding Team Rules
+
+> **5 Roles cố định** — mỗi người có thể dùng AI tool khác nhau (Cursor/ChatGPT/Claude/Gemini)
+
+### Files bắt buộc đọc
+
+| File | Mục đích |
+|------|----------|
+| `VIBE_RULES.md` | 10 golden rules cho vibe coding |
+| `AGENTS.md` | Role templates + conventions |
+| `CHANGELOG_SPEC.md` | Track spec changes |
+| `PROMPT_TEMPLATES/*` | Context packets cho từng AI tool |
+
+### Quick Start cho mỗi AI Tool
+
+| Tool | Template |
+|------|----------|
+| Cursor | `.cursorrules` auto-loads |
+| ChatGPT | `PROMPT_TEMPLATES/chatgpt-context.md` |
+| Claude | `PROMPT_TEMPLATES/claude-context.md` |
+| Gemini | `PROMPT_TEMPLATES/gemini-context.md` |
+
+### 10 Golden Rules
+
+1. **Đọc spec trước** — Không code khi chưa đọc `brand/prompts.md` §0
+2. **Không tự thêm tính năng** — Muốn thêm phải hỏi PM/team
+3. **Check 3 files trước khi code** — prompts.md, brand.md, SITEMAP.md
+4. **Mỗi AI đều phải tuân thủ** — Cursor, ChatGPT, Claude, Gemini
+5. **Spec thay đổi → Log** vào `CHANGELOG_SPEC.md`
+6. **Verify trước khi commit** — Type check, lint pass
+7. **Code phải match spec** — Không pragmatic override
+8. **Mỗi feature có owner** — Role responsible được ghi rõ
+9. **Privacy & Security** — Không bao giờ commit credentials
+10. **Khi không chắc — Hỏi** — Đừng đoán spec
+
+### Team Roles
+
+| Role | Người | AI Tool |
+|------|-------|---------|
+| Frontend | - | Cursor |
+| Backend | - | Claude |
+| AI/ML | - | ChatGPT |
+| Design | - | Cursor |
+| PM | - | Cursor |
+
+Chi tiết: `VIBE_RULES.md` và `AGENTS.md` §10
+
 ## 11. Dataset Reference
 
 ### googleplaystore_cleaned.csv
@@ -249,4 +296,4 @@ Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 
 ---
 
-*Phiên bản: 1.1 · Cập nhật: 2026-07-29 · Pre-implementation*
+*Phiên bản: 1.2 · Cập nhật: 2026-08-06 · Added Vibe Coding Team Rules §11*

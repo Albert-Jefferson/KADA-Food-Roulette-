@@ -429,6 +429,475 @@
         <mxCell id="ss_status" value="status: ENUM(ACTIVE, VOTING,&#xa;COMPLETED, CANCELLED)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinsession_entity" vertex="1">
           <mxGeometry y="175" width="240" height="35" as="geometry" />
         </mxCell>
+        <!-- ========== NEW ENTITIES v2.3 ========== -->
+        <!-- SPIN SYSTEM -->
+        <mxCell id="spinwallet_entity" value="SpinWallet" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#9370DB;fontColor=#FFFFFF;strokeColor=#6A4C9C;" parent="1" vertex="1">
+          <mxGeometry x="-390" y="390" width="240" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="sw_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinwallet_entity" vertex="1">
+          <mxGeometry y="30" width="240" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sw_user" value="userId: UUID (FK → User) UNIQUE" style="shape=text;align=left;spacingLeft=10;fontColor=#C62828;strokeColor=none;fillColor=none;fontStyle=2;" parent="spinwallet_entity" vertex="1">
+          <mxGeometry y="55" width="240" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sw_balance" value="balance: INT DEFAULT 10&#xa;(số spin hiện có)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinwallet_entity" vertex="1">
+          <mxGeometry y="80" width="240" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sw_updated" value="lastRechargeAt: DATETIME&#xa;updatedAt: DATETIME" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="spinwallet_entity" vertex="1">
+          <mxGeometry y="115" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="spinlog_entity" value="SpinLog" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#9370DB;fontColor=#FFFFFF;strokeColor=#6A4C9C;" parent="1" vertex="1">
+          <mxGeometry x="-660" y="390" width="250" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="sl_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinlog_entity" vertex="1">
+          <mxGeometry y="30" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sl_user" value="userId: UUID (FK → User)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinlog_entity" vertex="1">
+          <mxGeometry y="55" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sl_type" value="type: ENUM(FREE_DAILY, PURCHASE,&#xa;AD_WATCH, GIFT, USE)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinlog_entity" vertex="1">
+          <mxGeometry y="80" width="250" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sl_amount" value="amount: INT NOT NULL&#xa;(+/- số spin)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinlog_entity" vertex="1">
+          <mxGeometry y="115" width="250" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sl_ref" value="referenceId: VARCHAR(100)&#xa;(purchase_id, ad_id...)" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="spinlog_entity" vertex="1">
+          <mxGeometry y="150" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="spinpack_entity" value="SpinPack" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#9370DB;fontColor=#FFFFFF;strokeColor=#6A4C9C;" parent="1" vertex="1">
+          <mxGeometry x="-660" y="600" width="250" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinpack_entity" vertex="1">
+          <mxGeometry y="30" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_name" value="name: VARCHAR(100)&#xa;(e.g. &quot;Gói 20 spins&quot;)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinpack_entity" vertex="1">
+          <mxGeometry y="55" width="250" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_spins" value="spins: INT NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinpack_entity" vertex="1">
+          <mxGeometry y="90" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_price" value="priceVND: INT NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinpack_entity" vertex="1">
+          <mxGeometry y="115" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="sp_active" value="isActive: BOOLEAN DEFAULT TRUE" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="spinpack_entity" vertex="1">
+          <mxGeometry y="140" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="adwatchlog_entity" value="AdWatchLog" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#9370DB;fontColor=#FFFFFF;strokeColor=#6A4C9C;" parent="1" vertex="1">
+          <mxGeometry x="-660" y="780" width="250" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="aw_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="adwatchlog_entity" vertex="1">
+          <mxGeometry y="30" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="aw_user" value="userId: UUID (FK → User)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="adwatchlog_entity" vertex="1">
+          <mxGeometry y="55" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="aw_watched" value="watchedAt: DATETIME NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="adwatchlog_entity" vertex="1">
+          <mxGeometry y="80" width="250" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="aw_rewarded" value="rewarded: BOOLEAN DEFAULT FALSE" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="adwatchlog_entity" vertex="1">
+          <mxGeometry y="105" width="250" height="25" as="geometry" />
+        </mxCell>
+        <!-- B2B RESTAURANT PARTNER -->
+        <mxCell id="subscriptionplan_entity" value="SubscriptionPlan" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#B8860B;fontColor=#FFFFFF;strokeColor=#8B6914;" parent="1" vertex="1">
+          <mxGeometry x="1910" y="640" width="260" height="195" as="geometry" />
+        </mxCell>
+        <mxCell id="subp_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="subscriptionplan_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="subp_type" value="type: ENUM(RESTAURANT,&#xa;CORPORATE)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="subscriptionplan_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="subp_tier" value="tier: ENUM(BASIC, BRONZE, SILVER,&#xa;GOLD, ENTERPRISE)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="subscriptionplan_entity" vertex="1">
+          <mxGeometry y="90" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="subp_price" value="priceVND: INT NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="subscriptionplan_entity" vertex="1">
+          <mxGeometry y="125" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="subp_features" value="features: JSON&#xa;(array of feature keys)" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="subscriptionplan_entity" vertex="1">
+          <mxGeometry y="150" width="260" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="restaurantpartner_entity" value="RestaurantPartner" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#B8860B;fontColor=#FFFFFF;strokeColor=#8B6914;" parent="1" vertex="1">
+          <mxGeometry x="1910" y="855" width="260" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_user" value="ownerId: UUID (FK → User) NOT NULL&#xa;(chủ quán)" style="shape=text;align=left;spacingLeft=10;fontColor=#C62828;strokeColor=none;fillColor=none;fontStyle=2;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_rest" value="restaurantId: UUID (FK → Restaurant)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="90" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_plan" value="planId: UUID (FK → SubscriptionPlan)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="115" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_ppv" value="ppvRateVND: INT&#xa;(Pay-Per-Visit rate, nullable)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="140" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_status" value="status: ENUM(ACTIVE, PAUSED,&#xa;EXPIRED, CANCELLED)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="175" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="rp_created" value="createdAt, expiresAt, updatedAt" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="restaurantpartner_entity" vertex="1">
+          <mxGeometry y="210" width="260" height="10" as="geometry" />
+        </mxCell>
+        <!-- CORPORATE -->
+        <mxCell id="corporate_entity" value="CorporateAccount" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#2E5A88;fontColor=#FFFFFF;strokeColor=#1E3A58;" parent="1" vertex="1">
+          <mxGeometry x="2180" y="400" width="260" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_name" value="companyName: VARCHAR(255) NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_admin" value="adminId: UUID (FK → User) NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#C62828;strokeColor=none;fillColor=none;fontStyle=2;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_plan" value="planId: UUID (FK → SubscriptionPlan)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="105" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_seats" value="maxSeats: INT DEFAULT 10" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="130" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_status" value="status: ENUM(ACTIVE, PAUSED,&#xa;EXPIRED)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="155" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="corp_created" value="createdAt, expiresAt" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="corporate_entity" vertex="1">
+          <mxGeometry y="190" width="260" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="corporatemember_entity" value="CorporateMember" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#2E5A88;fontColor=#FFFFFF;strokeColor=#1E3A58;" parent="1" vertex="1">
+          <mxGeometry x="2180" y="620" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cm_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporatemember_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cm_corp" value="corporateId: UUID (FK → CorporateAccount)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporatemember_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cm_user" value="userId: UUID (FK → User)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporatemember_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cm_role" value="role: ENUM(MEMBER, MANAGER)&#xa;DEFAULT MEMBER" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="corporatemember_entity" vertex="1">
+          <mxGeometry y="105" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cm_joined" value="joinedAt: DATETIME" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="corporatemember_entity" vertex="1">
+          <mxGeometry y="140" width="260" height="20" as="geometry" />
+        </mxCell>
+        <!-- TASTE BOARD -->
+        <mxCell id="tasteboard_entity" value="TasteBoard" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#8B4513;fontColor=#FFFFFF;strokeColor=#5D3A1A;" parent="1" vertex="1">
+          <mxGeometry x="-120" y="390" width="260" height="195" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboard_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_owner" value="ownerId: UUID (FK → User) NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#C62828;strokeColor=none;fillColor=none;fontStyle=2;" parent="tasteboard_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_name" value="name: VARCHAR(100) NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboard_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_desc" value="description: TEXT" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboard_entity" vertex="1">
+          <mxGeometry y="105" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_vis" value="visibility: ENUM(PRIVATE, FRIENDS,&#xa;PUBLIC) DEFAULT PRIVATE" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboard_entity" vertex="1">
+          <mxGeometry y="130" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_created" value="createdAt, updatedAt" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="tasteboard_entity" vertex="1">
+          <mxGeometry y="165" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tasteboarditem_entity" value="TasteBoardItem" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#8B4513;fontColor=#FFFFFF;strokeColor=#5D3A1A;" parent="1" vertex="1">
+          <mxGeometry x="160" y="390" width="260" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_board" value="boardId: UUID (FK → TasteBoard)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_rest" value="restaurantId: UUID (FK → Restaurant)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_dish" value="dishName: VARCHAR(200)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="105" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_locket" value="locketId: UUID (FK → Locket)&#xa;(optional, nếu từ locket)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="130" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_note" value="note: TEXT" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="165" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tbi_added" value="addedAt: DATETIME" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="tasteboarditem_entity" vertex="1">
+          <mxGeometry y="190" width="260" height="20" as="geometry" />
+        </mxCell>
+        <!-- VISIT (for Pay-Per-Visit) -->
+        <mxCell id="visit_entity" value="RestaurantVisit" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#B8860B;fontColor=#FFFFFF;strokeColor=#8B6914;" parent="1" vertex="1">
+          <mxGeometry x="2180" y="800" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="vis_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="visit_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="vis_partner" value="partnerId: UUID (FK → RestaurantPartner)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="visit_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="vis_user" value="userId: UUID (FK → User)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="visit_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="vis_checkin" value="checkinAt: DATETIME NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="visit_entity" vertex="1">
+          <mxGeometry y="105" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="vis_verified" value="verified: BOOLEAN DEFAULT FALSE&#xa;(GPS verified)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="visit_entity" vertex="1">
+          <mxGeometry y="130" width="260" height="30" as="geometry" />
+        </mxCell>
+        <!-- NEW RELATIONSHIPS -->
+        <mxCell id="rel_user_sw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9370DB;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="spinwallet_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_usw_label" value="1:1" style="resizable=0;html=1;align=center;fontColor=#9370DB;fontSize=10;fontStyle=bold;" parent="rel_user_sw" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_sl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9370DB;strokeWidth=2;endArrow=classic;endFill=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="spinlog_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_usl_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#9370DB;fontSize=10;fontStyle=bold;" parent="rel_user_sl" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_aw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9370DB;strokeWidth=2;endArrow=classic;endFill=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.35;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="adwatchlog_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_uaw_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#9370DB;fontSize=10;fontStyle=bold;" parent="rel_user_aw" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_tb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B4513;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="tasteboard_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_utb_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#8B4513;fontSize=10;fontStyle=bold;" parent="rel_user_tb" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_tb_tbi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B4513;strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="tasteboard_entity" target="tasteboarditem_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_tbtbi_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#8B4513;fontSize=10;fontStyle=bold;" parent="rel_tb_tbi" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_rest_tbi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#228B22;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="restaurant_entity" target="tasteboarditem_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_resttbi_label" value="0:*" style="resizable=0;html=1;align=center;fontColor=#228B22;fontSize=10;fontStyle=bold;" parent="rel_rest_tbi" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_locket_tbi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4169E1;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="locket_entity" target="tasteboarditem_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_ltbi_label" value="0:1&#xa;(optional)" style="resizable=0;html=1;align=center;fontColor=#4169E1;fontSize=9;dashed=1;" parent="rel_locket_tbi" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_subp_rp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#B8860B;strokeWidth=2;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.4;entryDx=0;entryDy=0;" parent="1" source="subscriptionplan_entity" target="restaurantpartner_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_subprp_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#B8860B;fontSize=10;fontStyle=bold;" parent="rel_subp_rp" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_rp_vis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#B8860B;strokeWidth=2;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="restaurantpartner_entity" target="visit_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_rpvis_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#B8860B;fontSize=10;fontStyle=bold;" parent="rel_rp_vis" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_vis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B4513;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="visit_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_uvis_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#8B4513;fontSize=10;fontStyle=bold;" parent="rel_user_vis" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_corp_cm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2E5A88;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="corporate_entity" target="corporatemember_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_corpcm_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#2E5A88;fontSize=10;fontStyle=bold;" parent="rel_corp_cm" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_cm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2E5A88;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="corporatemember_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_usercm_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#2E5A88;fontSize=10;fontStyle=bold;" parent="rel_user_cm" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_subp_corp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2E5A88;strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="subscriptionplan_entity" target="corporate_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_subpcorp_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#2E5A88;fontSize=10;fontStyle=bold;" parent="rel_subp_corp" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- UPDATED SPEC NOTES -->
+        <mxCell id="notes_box" value="" style="shape=rect;rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontColor=#333;" parent="1" vertex="1">
+          <mxGeometry x="2450" y="240" width="300" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_title" value="SPEC NOTES v2.3" style="text;align=center;fontStyle=bold;fontColor=#E65100;fontSize=11;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2450" y="250" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_1" value="• Group.member_ids.length ≤ 20" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="275" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_2" value="• Locket: deviceHash + capturedAt REQUIRED" style="text;align=left;fontColor=#C62828;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="295" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_3" value="• Restaurant: only approved in roulette" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="315" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_4" value="• Friendship: mutual (both accepted)" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="335" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_5" value="• User.publicId immutable (share profile)" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="355" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_6" value="• Display name private vs public separated" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="375" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_7" value="• SpinWallet: 1:1 với User" style="text;align=left;fontColor=#9370DB;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="395" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_8" value="• RestaurantVisit: PPV billing" style="text;align=left;fontColor=#B8860B;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="415" width="280" height="18" as="geometry" />
+        </mxCell>
+        <!-- ========== NEW ENTITIES v2.4 ========== -->
+        <!-- MENU CAPTURE -->
+        <mxCell id="menu_entity" value="Menu" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#DC143C;fontColor=#FFFFFF;strokeColor=#8B0000;" parent="1" vertex="1">
+          <mxGeometry x="140" y="620" width="260" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="menu_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menu_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="menu_rest" value="restaurantId: UUID (FK → Restaurant)&#xa;NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#C62828;strokeColor=none;fillColor=none;fontStyle=2;" parent="menu_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="menu_image" value="imageUrl: VARCHAR(500) NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menu_entity" vertex="1">
+          <mxGeometry y="90" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="menu_extracted" value="extractedText: TEXT&#xa;(AI OCR output)" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="menu_entity" vertex="1">
+          <mxGeometry y="115" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="menu_items" value="parsedItems: JSON&#xa;(array of MenuItem)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menu_entity" vertex="1">
+          <mxGeometry y="150" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="menu_captured" value="capturedAt: DATETIME&#xa;capturedBy: UUID (FK → User)" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="menu_entity" vertex="1">
+          <mxGeometry y="185" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="menudish_entity" value="MenuItem" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#DC143C;fontColor=#FFFFFF;strokeColor=#8B0000;" parent="1" vertex="1">
+          <mxGeometry x="420" y="620" width="260" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="mi_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menudish_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="mi_menu" value="menuId: UUID (FK → Menu)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menudish_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="mi_name" value="name: VARCHAR(200) NOT NULL" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menudish_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="mi_price" value="priceVND: INT" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menudish_entity" vertex="1">
+          <mxGeometry y="105" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="mi_category" value="category: VARCHAR(100)&#xa;(món chính, side, drink...)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="menudish_entity" vertex="1">
+          <mxGeometry y="130" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="mi_tags" value="tags: JSON&#xa;(spicy, vegetarian...)" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="menudish_entity" vertex="1">
+          <mxGeometry y="165" width="260" height="35" as="geometry" />
+        </mxCell>
+        <!-- AI PERSONALIZATION -->
+        <mxCell id="userpreference_entity" value="UserPreference" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#00CED1;fontColor=#FFFFFF;strokeColor=#008B8B;" parent="1" vertex="1">
+          <mxGeometry x="-390" y="550" width="260" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="up_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="userpreference_entity" vertex="1">
+          <mxGeometry y="30" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="up_user" value="userId: UUID (FK → User) UNIQUE" style="shape=text;align=left;spacingLeft=10;fontColor=#C62828;strokeColor=none;fillColor=none;fontStyle=2;" parent="userpreference_entity" vertex="1">
+          <mxGeometry y="55" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="up_cuisine" value="cuisineScores: JSON&#xa;({cuisine: score 0-1})" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="userpreference_entity" vertex="1">
+          <mxGeometry y="80" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="up_price" value="priceRange: INT (1-4)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="userpreference_entity" vertex="1">
+          <mxGeometry y="115" width="260" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="up_updated" value="updatedAt: DATETIME" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="userpreference_entity" vertex="1">
+          <mxGeometry y="140" width="260" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="circlerecommendation_entity" value="CircleRecommendation" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;fillColor=#00CED1;fontColor=#FFFFFF;strokeColor=#008B8B;" parent="1" vertex="1">
+          <mxGeometry x="-120" y="610" width="280" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_id" value="id: UUID (PK)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="circlerecommendation_entity" vertex="1">
+          <mxGeometry y="30" width="280" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_group" value="groupId: UUID (FK → Group)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="circlerecommendation_entity" vertex="1">
+          <mxGeometry y="55" width="280" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_session" value="spinSessionId: UUID (FK → SpinSession)&#xa;(optional)" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="circlerecommendation_entity" vertex="1">
+          <mxGeometry y="80" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_scores" value="memberScores: JSON&#xa;({userId: {matchScore, reasons}})" style="shape=text;align=left;spacingLeft=10;fontColor=#333;strokeColor=none;fillColor=none;" parent="circlerecommendation_entity" vertex="1">
+          <mxGeometry y="115" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cr_created" value="createdAt: DATETIME" style="shape=text;align=left;spacingLeft=10;fontColor=#666;strokeColor=none;fillColor=none;fontStyle=2;" parent="circlerecommendation_entity" vertex="1">
+          <mxGeometry y="150" width="280" height="35" as="geometry" />
+        </mxCell>
+        <!-- NEW RELATIONSHIPS -->
+        <mxCell id="rel_rest_menu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC143C;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="restaurant_entity" target="menu_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_restmenu_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#DC143C;fontSize=10;fontStyle=bold;" parent="rel_rest_menu" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_menu_mi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC143C;strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="menu_entity" target="menudish_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_mimenu_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#DC143C;fontSize=10;fontStyle=bold;" parent="rel_menu_mi" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_up" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00CED1;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="user_entity" target="userpreference_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_userup_label" value="1:1" style="resizable=0;html=1;align=center;fontColor=#00CED1;fontSize=10;fontStyle=bold;" parent="rel_user_up" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_group_cr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#00CED1;strokeWidth=2;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="group_entity" target="circlerecommendation_entity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_groupcr_label" value="1:*" style="resizable=0;html=1;align=center;fontColor=#00CED1;fontSize=10;fontStyle=bold;" parent="rel_group_cr" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- NOTES UPDATE -->
+        <mxCell id="notes_box" value="" style="shape=rect;rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFB300;fontColor=#333;" parent="1" vertex="1">
+          <mxGeometry x="2450" y="240" width="300" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_title" value="SPEC NOTES v2.4" style="text;align=center;fontStyle=bold;fontColor=#E65100;fontSize=11;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2450" y="250" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_1" value="• Group.member_ids.length ≤ 20" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="275" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_2" value="• Locket: deviceHash + capturedAt REQUIRED" style="text;align=left;fontColor=#C62828;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="295" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_3" value="• Restaurant: only approved in roulette" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="315" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_4" value="• Menu: AI OCR extracted, user verified" style="text;align=left;fontColor=#DC143C;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="335" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_5" value="• CircleRecommendation: per group, per spin" style="text;align=left;fontColor=#00CED1;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="355" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_6" value="• UserPreference: cuisineScores 0-1" style="text;align=left;fontColor=#00CED1;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="375" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_7" value="• SpinWallet: 1:1 với User" style="text;align=left;fontColor=#9370DB;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="395" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_8" value="• RestaurantVisit: PPV billing" style="text;align=left;fontColor=#B8860B;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="415" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="notes_9" value="• User.publicId immutable" style="text;align=left;fontColor=#333;fontSize=10;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="2460" y="435" width="280" height="18" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
