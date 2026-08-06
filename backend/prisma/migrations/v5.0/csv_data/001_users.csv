@@ -1,0 +1,13 @@
+id,email,password_hash,password_version,display_name_private,display_name_public,public_id,avatar_url,phone,role,subscription_tier,is_onboarded,last_active_at,saved_restaurants,created_at,updated_at,deleted_at
+UUID(),admin@foodroulette.vn,$2b$10$placeholder_hash_here,1,Admin,FoodRoulette Admin,FRADM001,,,,ADMIN,PREMIUM,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),steward@foodroulette.vn,$2b$10$placeholder_hash_here,1,Steward,Food Steward,FRSTW001,,,,STEWARD,PREMIUM,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),minh.nguyen@example.com,$2b$10$placeholder_hash_here,1,Minh Nguyễn,Minh,FRUSR001,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),lan.pham@example.com,$2b$10$placeholder_hash_here,1,Lan Phạm,Lan,FRUSR002,,,,USER,PREMIUM,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),tuấn.tran@example.com,$2b$10$placeholder_hash_here,1,Tuấn Trần,Tuấn,FRUSR003,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),huy.hoang@example.com,$2b$10$placeholder_hash_here,1,Huy Hoàng,Huy,FRUSR004,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),thao.nguyen@example.com,$2b$10$placeholder_hash_here,1,Thảo Nguyễn,Thảo,FRUSR005,,,,USER,PREMIUM,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),khang.le@example.com,$2b$10$placeholder_hash_here,1,Khang Lê,Khang,FRUSR006,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),linh.vo@example.com,$2b$10$placeholder_hash_here,1,Linh Võ,Linh,FRUSR007,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),dat.dang@example.com,$2b$10$placeholder_hash_here,1,Đạt Đặng,Đạt,FRUSR008,,,,USER,PREMIUM,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),mai.pham@example.com,$2b$10$placeholder_hash_here,1,Mai Phạm,Mai,FRUSR009,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),vi.nguyen@example.com,$2b$10$placeholder_hash_here,1,Vĩ Nguyễn,Vĩ,FRUSR010,,,,USER,FREE,TRUE,,,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
