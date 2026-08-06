@@ -204,6 +204,20 @@ Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 - **Folder trong app:** dùng Expo Router (file-based routing, `app/`).
 - **Tailwind tokens:** map 1-1 với `brand/brand.md` — đặt trong `app/tailwind.config.js`.
 
+### Quy Tắc Đồng Bộ Files (CRITICAL)
+
+> **Khi thay đổi BẤT KỲ file nào, PHẢI cập nhật TẤT CẢ files liên quan.**
+
+| Thay đổi... | Phải đồng bộ... |
+|--------------|------------------|
+| `docs/*.xml` (ERD) | `backend/prisma/schema.prisma`, `migrations/`, `ERD_MIGRATION_NOTES.md` |
+| `schema.prisma` | `docs/*.xml`, `backend/prisma/migrations/*.sql` |
+| `brand/prompts.md` | `brand/brand.md`, `brand/FOOD-ROULETTE-SITEMAP.md`, `PROMPT_TEMPLATES/` |
+| `brand/brand.md` | `app/tailwind.config.js` |
+| `VIBE_RULES.md` | `CLAUDE.md`, `AGENTS.md`, `PROMPT_TEMPLATES/*.md` |
+
+**Xem chi tiết:** `VIBE_RULES.md` §8 - Cross-File Consistency
+
 ## 10. Cách dùng file này
 
 1. **Bắt đầu chat mới với AI?** Copy nội dung file này + `brand/prompts.md` (hoặc copy nguyên §0 của `prompts.md`) là đủ.

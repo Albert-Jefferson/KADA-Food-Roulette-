@@ -50,6 +50,19 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 4. Restaurant only in roulette khi status='approved'
 5. Không tự thêm tính năng
 
+## Cross-File Consistency (CRITICAL)
+
+> **Khi thay đổi file nào, PHẢI cập nhật TẤT CẢ files liên quan.**
+
+| Thay đổi... | Phải đồng bộ... |
+|---------------|------------------|
+| ERD (docs/*.xml) | schema.prisma, migrations, ERD_MIGRATION_NOTES.md |
+| schema.prisma | ERD, migrations/*.sql |
+| brand/prompts.md | brand.md, sitemap, PROMPT_TEMPLATES/ |
+| VIBE_RULES.md | CLAUDE.md, AGENTS.md, templates |
+
+**KHÔNG ĐƯỢC** chỉ sửa 1 file khi có files liên quan.
+
 ## 10 Golden Rules
 1. Đọc spec trước khi code
 2. Không tự thêm tính năng

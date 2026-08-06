@@ -313,7 +313,30 @@ KHI NHẬN REQUEST:
 | Lên kế hoạch cho task lớn | `SwitchMode` → Plan |
 | Theo dõi task phức tạp | `TodoWrite` |
 
-## 10. Dataset Reference
+## 12. Cross-File Consistency (MANDATORY)
+
+> **Khi thay đổi BẤT KỲ file nào, PHẢI cập nhật TẤT CẢ files liên quan.**
+
+### Mapping Files Liên Quan
+
+| Thay đổi... | Phải đồng bộ... |
+|---------------|------------------|
+| `docs/*.xml` (ERD) | `schema.prisma`, `migrations/`, `ERD_MIGRATION_NOTES.md` |
+| `schema.prisma` | `docs/*.xml`, `migrations/*.sql` |
+| `brand/prompts.md` | `brand/brand.md`, `sitemap`, `PROMPT_TEMPLATES/` |
+| `VIBE_RULES.md` | `CLAUDE.md`, `AGENTS.md`, `PROMPT_TEMPLATES/*.md` |
+
+### Checklist Trước Commit
+
+- [ ] Schema change? → schema.prisma + ERD + migrations đồng bộ
+- [ ] Spec change? → prompts.md + sitemap + CHANGELOG updated
+- [ ] Process change? → VIBE_RULES.md + templates đồng bộ
+
+**Xem chi tiết:** `VIBE_RULES.md` §8
+
+---
+
+## 13. Dataset Reference
 
 ### googleplaystore_cleaned.csv
 
