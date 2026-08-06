@@ -135,18 +135,20 @@
 | `brand/prompts.md` | 2.4 | 2026-08-06 | Added §13 Menu Capture + AI |
 | `brand/brand.md` | - | - | - |
 | `brand/FOOD-ROULETTE-SITEMAP.md` | 2.4 | 2026-08-06 | Added §19.15-16 |
+| `backend/prisma/schema.prisma` | 5.0 | 2026-08-06 | Synced with v5.0 schema |
+| `backend/prisma/migrations/v5.0/complete_schema.sql` | 5.0 | 2026-08-06 | Complete schema (15 tables) |
+| `backend/prisma/migrations/v5.0/seed_data.sql` | 5.0 | 2026-08-06 | Seed data for testing |
 | `docs/food_roulette_erd.drawio.xml` | 2.5 | 2026-08-06 | Previous version (Menu + AI entities) |
 | `docs/food_roulette_erd_v2.6.drawio.xml` | 2.6 | 2026-08-06 | SQL Architecture Review fixes (P0-P2) |
 | `docs/food_roulette_erd_v3.0_normalized.xml` | 3.0 | 2026-08-06 | BCNF+4NF Normalized (26 entities) |
 | `docs/food_roulette_erd_v4.0_lean_mvp.xml` | 4.0 | 2026-08-06 | LEAN MVP (12 entities) |
 | `docs/food_roulette_erd_v4.1_hybrid_mvp.xml` | 4.1 | 2026-08-06 | HYBRID MVP (14 entities) |
-| **`docs/food_roulette_erd_v5.0_reviewed.xml`** | **5.0** | **2026-08-06** | **REVIEWED & OPTIMIZED (15 entities)** |
-| `docs/DB_SCHEMA_REVIEW_v5.0.md` | 5.0 | 2026-08-06 | Complete review report |
-| `backend/prisma/schema.prisma` | 5.0 | 2026-08-06 | Updated to v5.0 |
-| `docs/ERD_MIGRATION_NOTES.md` | 1.1 | 2026-08-06 | Added v3.0 4NF migration |
 | `docs/BCNF_ANALYSIS.md` | 1.1 | 2026-08-06 | BCNF + 4NF analysis |
+| `docs/ERD_MIGRATION_NOTES.md` | 1.1 | 2026-08-06 | Added v3.0 4NF migration |
 | `VIBE_RULES.md` | 1.0 | 2026-08-06 | Initial version |
 | `AGENTS.md` | 1.2 | 2026-08-06 | Added Role Templates |
+| `CHANGELOG_SPEC.md` | 1.3 | 2026-08-06 | Added v5.0 migration docs |
+| `README.md` | 1.2 | 2026-08-06 | Updated with DB setup |
 
 ---
 
@@ -288,6 +290,42 @@
   - P1 IMPORTANT: 2 tables (Locket, CheckIn)
   - P2 DEFERRED: TasteBoard, Menu, AI, B2B...
   - **TOTAL v5.0: 15 tables (BCNF/4NF compliant)**
+
+---
+
+## 2026-08-06
+
+### Added
+
+- **Database v5.0 - Complete Schema & Seed Data**
+  - By: AI Assistant
+  - Via: Cursor
+  - Files affected:
+    - `backend/prisma/migrations/v5.0/000_create_database.sql` (new)
+    - `backend/prisma/migrations/v5.0/complete_schema.sql` (new - 15 tables)
+    - `backend/prisma/migrations/v5.0/seed_data.sql` (new - test data)
+    - `backend/prisma/migrations/v5.0/csv_data/` (import scripts)
+    - `backend/prisma/schema.prisma` (synced with v5.0)
+    - `CHANGELOG_SPEC.md` (this update)
+    - `README.md` (updated with DB setup)
+
+  **Tables Created (15):**
+  - P0 Core: users, restaurants, restaurant_hours, restaurant_photos
+  - P0 Social: friendships
+  - P0 Spin: spin_groups, group_members, spin_sessions, spin_session_candidates, votes, spin_wallets, spin_logs
+  - P1 Feature: lockets, check_ins
+  - P1 Purchase: spin_packs
+
+  **Seed Data Verified:**
+  - 5 users (1 steward, 4 test users)
+  - 10 restaurants (9 approved, 1 pending)
+  - 3 friendships (all accepted)
+  - 1 spin group (3 members)
+  - 4 spin wallets
+  - 5 spin sessions (mix of personal/group, various statuses)
+  - 5 votes (accept/reject)
+  - 5 lockets (public/friends/private)
+  - 3 check-ins (completed/pending)
 
 ---
 
