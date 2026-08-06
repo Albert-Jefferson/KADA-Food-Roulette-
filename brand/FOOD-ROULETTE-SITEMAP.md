@@ -662,7 +662,7 @@ interface Review {
 
 ---
 
-## 19. Quyết định sản phẩm v2.1 (cập nhật 2026-07-24)
+## 19. Quyết định sản phẩm v2.3 (cập nhật 2026-08-06)
 
 > Phần này là **phụ lục ưu tiên cao**, ghi nhận các quyết định mới nhất. Mọi phần khác của tài liệu cần đối chiếu lại khi triển khai.
 
@@ -721,15 +721,20 @@ interface Review {
 | Auth (email + Google) qua Supabase | ✅ |
 | Onboarding (chọn cuisine, vị trí, tên) | ✅ |
 | **Spin cá nhân** (random trong bán kính, filter cuisine/giá) | ✅ |
+| **Spin Wallet** (Spin System v2) | ✅ |
 | **Group spin** (mutual opt-in, max 20 người, vote chấp nhận) | ✅ |
 | **Locket capture** (camera-only, có metadata, geotag) | ✅ |
 | Locket feed (cá nhân + nhóm + public) | ✅ |
+| **Taste Board** (collections của lockets) | ✅ |
 | Profile công khai (grid locket public) | ✅ |
 | **Thêm quán user-submitted** (chờ steward duyệt) | ✅ |
 | **Steward dashboard** (duyệt quán mới) | ✅ |
 | Google Places lookup / seed | ✅ |
+| **Restaurant Partner (B2B)** | ✅ |
+| **Corporate Account (B2B)** | ✅ |
+| **Menu Capture** (chụp menu + AI OCR) | ✅ v1.1 |
+| **AI Personalization** (suggest best match per member) | ✅ v1.1 |
 | Kiểm duyệt review/locket text | ❌ v1.2 |
-| AI gợi ý theo khẩu vị | ❌ v1.2 |
 | Streak / gamification | ❌ v2.0 |
 | In-app chat | ❌ v2.0 |
 | Web app (chỉ marketing page tĩnh) | có thể có |
@@ -863,6 +868,152 @@ interface RestaurantSubmission {
   decision?: 'approved' | 'rejected' | 'merged_into';
   merged_with_id?: string;
 }
+
+// ========== Spin System v2 ==========
+interface SpinWallet {
+  id: string;
+  userId: string;                    // 1:1 với User
+  balance: number;                  // Số spin hiện có
+  lastRechargeAt: Date;
+  updatedAt: Date;
+}
+
+interface SpinLog {
+  id: string;
+  userId: string;
+  type: 'FREE_DAILY' | 'PURCHASE' | 'AD_WATCH' | 'GIFT' | 'USE';
+  amount: number;                    // +/- số spin
+  referenceId?: string;             // purchase_id, ad_id
+  createdAt: Date;
+}
+
+interface SpinPack {
+  id: string;
+  name: string;                     // e.g. "Gói 20 spins"
+  spins: number;
+  priceVND: number;
+  isActive: boolean;
+}
+
+interface AdWatchLog {
+  id: string;
+  userId: string;
+  watchedAt: Date;
+  rewarded: boolean;
+}
+
+// ========== B2B Restaurant Partner ==========
+interface SubscriptionPlan {
+  id: string;
+  type: 'RESTAURANT' | 'CORPORATE';
+  tier: 'BASIC' | 'BRONZE' | 'SILVER' | 'GOLD' | 'ENTERPRISE';
+  priceVND: number;
+  features: string[];                // array of feature keys
+}
+
+interface RestaurantPartner {
+  id: string;
+  ownerId: string;                  // FK → User (chủ quán)
+  restaurantId: string;             // FK → Restaurant
+  planId: string;                   // FK → SubscriptionPlan
+  ppvRateVND: number;               // Pay-Per-Visit rate
+  status: 'ACTIVE' | 'PAUSED' | 'EXPIRED' | 'CANCELLED';
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+interface RestaurantVisit {
+  id: string;
+  partnerId: string;                // FK → RestaurantPartner
+  userId: string;                  // FK → User (khách)
+  checkinAt: Date;
+  verified: boolean;                // GPS trong 100m
+}
+
+// ========== B2B Corporate ==========
+interface CorporateAccount {
+  id: string;
+  companyName: string;
+  adminId: string;                 // FK → User (admin công ty)
+  planId: string;                  // FK → SubscriptionPlan
+  maxSeats: number;
+  status: 'ACTIVE' | 'PAUSED' | 'EXPIRED';
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+interface CorporateMember {
+  id: string;
+  corporateId: string;              // FK → CorporateAccount
+  userId: string;                  // FK → User
+  role: 'MEMBER' | 'MANAGER';
+  joinedAt: Date;
+}
+
+// ========== Taste Board ==========
+interface TasteBoard {
+  id: string;
+  ownerId: string;                  // FK → User
+  name: string;
+  description?: string;
+  visibility: 'PRIVATE' | 'FRIENDS' | 'PUBLIC';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface TasteBoardItem {
+  id: string;
+  boardId: string;                 // FK → TasteBoard
+  restaurantId?: string;            // FK → Restaurant
+  dishName?: string;
+  locketId?: string;               // FK → Locket
+  note?: string;
+  addedAt: Date;
+}
+
+// ========== Menu Capture ==========
+interface Menu {
+  id: string;
+  restaurantId: string;            // FK → Restaurant
+  imageUrl: string;
+  extractedText: string;            // AI OCR output
+  parsedItems: MenuItem[];         // Parsed menu items
+  capturedAt: Date;
+  capturedBy: string;              // FK → User
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+}
+
+interface MenuItem {
+  id: string;
+  menuId: string;                  // FK → Menu
+  name: string;
+  priceVND?: number;
+  category?: string;               // món chính, side, drink...
+  tags: string[];                 // spicy, vegetarian, gluten-free...
+}
+
+// ========== AI Personalization ==========
+interface UserPreference {
+  id: string;
+  userId: string;                  // FK → User (1:1)
+  cuisineScores: Record<string, number>;  // { "Vietnamese": 0.9, "Japanese": 0.7 }
+  priceRange: 1 | 2 | 3 | 4;
+  dietaryRestrictions: string[];   // vegetarian, halal, gluten-free...
+  spiceTolerance: 'mild' | 'medium' | 'spicy';
+  updatedAt: Date;
+}
+
+interface CircleRecommendation {
+  id: string;
+  groupId: string;                // FK → Group
+  spinSessionId?: string;          // FK → SpinSession (optional)
+  memberScores: Record<string, {
+    matchScore: number;            // 0-1
+    reasons: string[];             // ["Bạn thích món cay", "Trong budget"]
+    suggestedItems: string[];      // Top 3 items for member
+  }>;
+  createdAt: Date;
+}
 ```
 
 ### 19.9 Ràng buộc & invariants quan trọng
@@ -874,6 +1025,11 @@ interface RestaurantSubmission {
 5. `Friendship` mutual: `current_user` thấy user B là bạn **chỉ khi** cả 2 record `accepted` tồn tại (kết hợp 2 chiều user_a → user_b hoặc user_b → user_a).
 6. `User.public_id` không đổi sau khi tạo — dùng để chia sẻ profile an toàn (username có thể đổi).
 7. Camera permission phải được xin trước khi mở capture screen — fallback khi denied = hiện thông báo "Không thể tạo locket nếu không bật camera".
+8. `SpinWallet.balance >= 0` — không cho phép âm.
+9. `RestaurantVisit.verified = true` chỉ khi GPS trong bán kính 100m.
+10. Corporate members không vượt quá `maxSeats`.
+11. `Menu.status = 'VERIFIED'` trước khi dùng cho spin.
+12. `CircleRecommendation` được tạo cho mỗi group spin.
 
 ### 19.10 Open questions còn lại (để thống nhất sau)
 
@@ -883,10 +1039,99 @@ interface RestaurantSubmission {
 - [ ] Ảnh locket có tự hủy (24h) hay giữ vĩnh viễn?
 - [ ] Push notification khi bạn bè đăng locket mới — bật/tắt riêng từng người?
 - [ ] `device_hash` có thể reset khi user đổi máy? (cần chiến lược chống false-positive)
+- [ ] AI OCR engine: dùng Google ML Kit, AWS Textract, hay custom model?
+- [ ] Preference learning: real-time update hay batch update daily?
+
+### 19.11 Spin System v2 (Spin Wallet & Recharge)
+
+**Spin Economy:**
+| Nguồn spin | Số lượng | Chi phí |
+|------------|----------|---------|
+| Free Daily | 10 spins | Miễn phí (reset 00:00) |
+| Ad Watch | 1 spin | Miễn phí (max 5/ngày) |
+| Gift | Variable | Miễn phí |
+| Spin Pack | 5-100 spins | 15k-179k |
+| Pro | Unlimited | 59k/tháng |
+
+**Spin Packs:**
+| Pack | Spins | Giá |
+|------|-------|------|
+| Starter | 5 | 15k |
+| Regular | 20 | 49k |
+| Pro | 50 | 99k |
+| Power | 100 | 179k |
+
+### 19.12 Restaurant Partner (B2B)
+
+**Pricing Tiers:**
+| Tier | Fixed | PPV/Visit | Features |
+|------|-------|-----------|----------|
+| Basic | Miễn phí | - | Badge only |
+| Bronze PPV | 99k/tháng | 5k | + Analytics |
+| Silver PPV | 199k/tháng | 4k | + Top 5 + Promo |
+| Gold PPV | 399k/tháng | 3k | + Top 3 + Priority |
+
+**Featured Algorithm:**
+```
+Score = distance × 0.4 + rating × 0.3 + tier × 0.2 + recency × 0.1
+```
+
+### 19.13 Corporate Account (B2B)
+
+| Package | Giá/tháng | Seats |
+|---------|-----------|-------|
+| Starter | 999k | 10 |
+| Growth | 2,499k | 30 |
+| Enterprise | 4,999k | 100+ |
+
+### 19.14 Sitemap Updates (v2.4)
+
+**Trang mới cho B2B:**
+- `/partner/dashboard` — Dashboard cho restaurant partner
+- `/partner/analytics` — Analytics chi tiết
+- `/partner/promo` — Tạo & quản lý promo codes
+- `/partner/settings` — Cài đặt partner
+- `/corporate/dashboard` — Dashboard cho corporate admin
+- `/corporate/members` — Quản lý seats
+- `/corporate/analytics` — Spend analytics
+
+**Trang mới cho Spin System:**
+- `/spin/shop` — Mua spin packs
+- `/spin/wallet` — Xem số dư & lịch sử
+
+**Trang mới cho Menu Capture:**
+- `/spin/menu-capture` — Chụp & parse menu
+- `/spin/menu-review` — Xác nhận menu đã parse
+
+**Trang mới cho AI Personalization:**
+- `/preferences` — Quản lý sở thích cá nhân
+- `/preferences/explicit` — Set preference thủ công
+
+### 19.15 Menu Capture Flow
+
+```
+1. User đến quán → Tap "Chụp Menu"
+2. Camera mở → Chụp ảnh menu
+3. AI OCR parse → Hiện danh sách món
+4. User xác nhận/chỉnh sửa
+5. Spin với menu này
+6. AI suggest best match cho từng member
+```
+
+### 19.16 AI Match Algorithm
+
+```
+MatchScore = CuisineMatch × 0.4 + PriceMatch × 0.3 + DietaryMatch × 0.2 + SpiceMatch × 0.1
+
+CuisineMatch = user.cuisineScores[menuItem.category] || 0.5
+PriceMatch = menuItem.price <= maxPrice(user.priceRange) ? 1 : 0.5
+DietaryMatch = menuItem.tags.includesAll(user.dietary) ? 1 : 0
+SpiceMatch = menuItem.spiceLevel <= user.spiceTolerance ? 1 : 0.5
+```
 
 ---
 
-*Tài liệu phiên bản: 2.2*
-*Cập nhật lần cuối: 2026-07-24*
+*Tài liệu phiên bản: 2.4*
+*Cập nhật lần cuối: 2026-08-06*
 *Design Language đồng bộ với `brand/brand.md` — hệ Earthy (nâu-vàng, warm light-first).*
-*Quyết định sản phẩm v2.1 (Expo + RN, group max 20, camera-only locket, 2 tên, steward moderation): xem §19.*
+*Quyết định sản phẩm v2.4 (Menu Capture + AI Personalization): xem §19.*
