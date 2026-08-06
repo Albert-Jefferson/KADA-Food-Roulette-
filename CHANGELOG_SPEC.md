@@ -327,6 +327,14 @@
   - 5 lockets (public/friends/private)
   - 3 check-ins (completed/pending)
 
+  **Validation Queries (6 queries):**
+  - Query 1: Group Spin Complete Workflow (session → candidates → votes → result)
+  - Query 2: Locket Feed with Visibility Rules (PUBLIC/FRIENDS/PRIVATE)
+  - Query 3: Check-in Verification Complex (GPS + Locket + Restaurant matching)
+  - Query 4: Spin Wallet Audit Trail (running balance + integrity check)
+  - Query 5: Restaurant Recommendation Engine (eligibility scoring)
+  - Bonus: Friendship Network Analysis (mutual friends)
+
 ---
 
 ## Team Roles
