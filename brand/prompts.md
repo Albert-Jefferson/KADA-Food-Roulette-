@@ -447,7 +447,464 @@ Xưng "mình – bạn"                          Xưng "quý khách"
 - [ ] **Vòng đời ảnh locket:** tự hủy 24h, hay giữ vĩnh viễn?
 - [ ] **Push notification:** bật/tắt riêng từng người bạn?
 - [ ] **`device_hash` reset** khi user đổi máy — chiến lược chống false-positive?
-- [ ] **Pricing** (Free/Pro/Business): có triển khai trong v1.0 không, hay để v1.2?
+- [x] **Pricing** (Free/Pro/Business): ✅ Đã triển khai Spin System + B2B trong v1.0
+
+---
+
+## §10 · Spin System v2 (Spin Wallet & Recharge)
+
+> Cập nhật: 2026-08-06 · v2.3
+
+### 10.1 Tổng quan
+
+Spin System thay thế model "5 spins/ngày free" bằng **Spin Wallet** — ví chứa spin credits có thể nạp lại qua nhiều cách.
+
+**Tại sao thay đổi:**
+- User không bị giới hạn cứng "5 spins/ngày"
+- Tăng engagement với daily recharge
+- Tạo revenue stream qua spin packs
+- Giảm friction khi user muốn spin nhiều lần
+
+### 10.2 Spin Wallet
+
+```typescript
+interface SpinWallet {
+  id: string;
+  userId: string;           // 1:1 với User
+  balance: number;          // Số spin hiện có
+  lastRechargeAt: Date;
+  updatedAt: Date;
+}
+
+interface SpinLog {
+  id: string;
+  userId: string;
+  type: 'FREE_DAILY' | 'PURCHASE' | 'AD_WATCH' | 'GIFT' | 'USE';
+  amount: number;           // +/- số spin
+  referenceId?: string;     // purchase_id, ad_id
+  createdAt: Date;
+}
+```
+
+### 10.3 Spin Economy
+
+| Nguồn spin | Số lượng | Chi phí | Ghi chú |
+|------------|----------|---------|---------|
+| **Free Daily** | 10 spins | Miễn phí | Reset lúc 00:00 hàng ngày |
+| **Ad Watch** | 1 spin | Miễn phí | Max 5 lần/ngày |
+| **Gift** | Variable | Miễn phí | Từ friend referral |
+| **Spin Pack** | 5-100 spins | 15k-199k | One-time purchase |
+| **Pro Subscription** | Unlimited | 59k/tháng | Auto-recharge |
+
+### 10.4 Spin Packs (IAP)
+
+| Pack | Spins | Giá | Value | Best For |
+|------|-------|------|-------|----------|
+| Starter | 5 | 15k | 3k/spin | Thử nghiệm |
+| Regular | 20 | 49k | 2.45k/spin | Dùng 1 tuần |
+| Pro | 50 | 99k | 1.98k/spin | Dùng 1 tháng |
+| Power | 100 | 179k | 1.79k/spin | Power user |
+
+### 10.5 Ad Watch Flow
+
+```
+1. User hết spin → Thấy nút "Xem quảng cáo +1 spin"
+2. User tap → Play ad (15-30s)
+3. Ad complete → +1 spin vào wallet
+4. Cap: 5 ads/ngày/user
+5. Ad revenue split: ~70% cho publisher
+```
+
+### 10.6 Invariants
+
+1. `SpinWallet.balance >= 0` — không cho phép âm
+2. Spin không transfer được giữa users
+3. Spin packs không hết hạn sau khi mua
+4. Ad watch cap per user per day: 5 spins
+
+---
+
+## §11 · B2B Revenue: Restaurant Partner & Corporate
+
+> Cập nhật: 2026-08-06 · v2.3
+
+### 11.1 Restaurant Partner (B2B Nhà hàng)
+
+**Mô hình hybrid:** Fixed tier + Pay-Per-Visit (PPV)
+
+#### Pricing Tiers
+
+| Tier | Fixed | PPV/Visit | Features |
+|------|-------|-----------|----------|
+| **Basic** | Miễn phí | - | Badge only, basic info |
+| **Bronze PPV** | 99k/tháng | 5k | + Badge + Basic analytics |
+| **Silver PPV** | 199k/tháng | 4k | + Featured top 5 + Promo codes |
+| **Gold PPV** | 399k/tháng | 3k | + Top 3 + Full analytics + Priority |
+
+#### Pay-Per-Visit Model
+
+```typescript
+interface RestaurantPartner {
+  id: string;
+  ownerId: string;           // FK → User (chủ quán)
+  restaurantId: string;      // FK → Restaurant
+  planId: string;           // FK → SubscriptionPlan
+  ppvRateVND: number;       // Rate per verified visit
+  status: 'ACTIVE' | 'PAUSED' | 'EXPIRED' | 'CANCELLED';
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+interface RestaurantVisit {
+  id: string;
+  partnerId: string;         // FK → RestaurantPartner
+  userId: string;           // FK → User (khách)
+  checkinAt: Date;
+  verified: boolean;         // GPS trong 100m
+}
+```
+
+**Verification Mechanism:**
+1. Khách đến quán → Mở app → "Check-in"
+2. App verify GPS (trong bán kính 100m)
+3. Nếu verified → RestaurantVisit record
+4. End of month: billing = fixed + (visits × ppvRate)
+
+#### Featured Placement Algorithm
+
+Score = distanceWeight × 0.4 + ratingWeight × 0.3 + partnerTier × 0.2 + recency × 0.1
+
+| Tier | Partner Boost |
+|------|--------------|
+| Basic | 0% |
+| Bronze | +15% |
+| Silver | +25% (Top 5) |
+| Gold | +35% (Top 3) |
+
+### 11.2 Corporate Account (B2B Doanh nghiệp)
+
+#### Pricing Tiers
+
+| Package | Giá/tháng | Seats | Features |
+|---------|-----------|-------|----------|
+| **Starter** | 999k | 10 | Basic team spin, unlimited spins |
+| **Growth** | 2,499k | 30 | + Analytics + Spend report |
+| **Enterprise** | 4,999k | 100+ | + Custom + Dedicated support |
+
+```typescript
+interface CorporateAccount {
+  id: string;
+  companyName: string;
+  adminId: string;           // FK → User (admin của công ty)
+  planId: string;           // FK → SubscriptionPlan
+  maxSeats: number;
+  status: 'ACTIVE' | 'PAUSED' | 'EXPIRED';
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+interface CorporateMember {
+  id: string;
+  corporateId: string;       // FK → CorporateAccount
+  userId: string;           // FK → User
+  role: 'MEMBER' | 'MANAGER';
+  joinedAt: Date;
+}
+```
+
+### 11.3 Local Proof Strategy
+
+**Vấn đề của chủ quán:** "App có ai xài không?"
+
+**Giải pháp:**
+
+| Feature | Mô tả |
+|---------|--------|
+| **Local Heatmap** | Bản đồ user density theo khu vực |
+| **Partner Showcase** | "X+ quán đối tác trong khu vực" |
+| **Live Counter** | "X người đang tìm quán ăn gần đây" |
+
+### 11.4 Guarantee & Risk Reversal
+
+| Guarantee | Mô tả |
+|-----------|--------|
+| **0 đơn = Hoàn tiền** | Hoàn 100% nếu 0 visit trong 30 ngày |
+| **7 ngày free Gold** | Trial không cần credit card |
+| **Pay-per-Visit** | Chỉ trả khi CÓ khách thật |
+
+### 11.5 Onboarding Simplified
+
+| Feature | Mô tả |
+|---------|--------|
+| **1-Click Setup** | Import từ Google Maps |
+| **WhatsApp Support** | Nhân viên hỗ trợ trực tiếp |
+| **Auto Profile** | Pull data từ platform khác |
+
+---
+
+## §12 · Taste Board (Locket Collections)
+
+> Cập nhật: 2026-08-06 · v2.3
+
+### 12.1 Tổng quan
+
+Taste Board = Collection của các món ăn/lockets. User có thể tạo nhiều boards cho các mục đích khác nhau.
+
+### 12.2 Data Model
+
+```typescript
+interface TasteBoard {
+  id: string;
+  ownerId: string;           // FK → User
+  name: string;
+  description?: string;
+  visibility: 'PRIVATE' | 'FRIENDS' | 'PUBLIC';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface TasteBoardItem {
+  id: string;
+  boardId: string;           // FK → TasteBoard
+  restaurantId?: string;     // FK → Restaurant (optional)
+  dishName?: string;
+  locketId?: string;         // FK → Locket (optional)
+  note?: string;
+  addedAt: Date;
+}
+```
+
+### 12.3 Use Cases
+
+| Board Name | Visibility | Mục đích |
+|------------|-----------|----------|
+| "Quán ngon Sài Gòn" | PUBLIC | Chia sẻ với cộng đồng |
+| "Bữa trưa team" | FRIENDS | Share với nhóm |
+| "Ăn vặt dưới 30K" | PRIVATE | Personal tracking |
+| "Cuối tuần gia đình" | FRIENDS | Family dining |
+
+---
+
+## §13 · Menu Capture & AI Personalization
+
+> Cập nhật: 2026-08-06 · v2.4
+
+### 13.1 Menu Capture
+
+**Concept:** Chụp menu tại quán → AI đọc → Đưa vào vòng quay → Mỗi member trong circle được suggest best match.
+
+**User Flow:**
+```
+1. Đến quán → Chụp menu (từ camera app)
+2. AI OCR đọc menu → Parse thành danh sách món
+3. User xác nhận/chỉnh sửa menu
+4. Spin với các món từ menu này
+5. AI suggest best match cho từng member
+```
+
+#### Data Model
+
+```typescript
+interface Menu {
+  id: string;
+  restaurantId: string;      // FK → Restaurant
+  imageUrl: string;
+  extractedText: string;     // AI OCR output
+  parsedItems: MenuItem[];   // Array of parsed items
+  capturedAt: Date;
+  capturedBy: string;        // FK → User
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED';
+}
+
+interface MenuItem {
+  id: string;
+  menuId: string;
+  name: string;
+  priceVND?: number;
+  category?: string;         // món chính, side, drink...
+  tags: string[];           // spicy, vegetarian, gluten-free...
+}
+```
+
+#### AI OCR Pipeline
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  Chụp ảnh   │ → │  Vision API  │ → │  Parse Text  │
+│  menu        │    │  OCR         │    │  (structured)│
+└──────────────┘    └──────────────┘    └──────────────┘
+                                              ↓
+                    ┌──────────────┐    ┌──────────────┐
+                    │  User Verify │ ← │  Extract     │
+                    │  & Edit      │    │  MenuItems   │
+                    └──────────────┘    └──────────────┘
+```
+
+### 13.2 AI Personalization
+
+**Concept:** Dựa trên sở thích của từng member trong circle → AI suggest best match → Tăng satisfaction cho cả nhóm.
+
+#### User Preference Learning
+
+```typescript
+interface UserPreference {
+  id: string;
+  userId: string;            // FK → User (1:1)
+  cuisineScores: Record<string, number>;  // { "Vietnamese": 0.9, "Japanese": 0.7 }
+  priceRange: 1 | 2 | 3 | 4;
+  dietaryRestrictions: string[];  // vegetarian, halal, gluten-free...
+  spiceTolerance: 'mild' | 'medium' | 'spicy';
+  updatedAt: Date;
+}
+```
+
+#### Preference Learning Sources
+
+| Source | Weight | Description |
+|--------|--------|-------------|
+| Spin history | 40% | Món nào đã spin trước đây |
+| Locket ratings | 30% | Rating đã cho |
+| Reviews written | 20% | Review content analysis |
+| Explicit settings | 10% | User tự set trong profile |
+
+#### Circle Recommendation
+
+```typescript
+interface CircleRecommendation {
+  id: string;
+  groupId: string;          // FK → Group
+  spinSessionId?: string;    // Optional, link to spin
+  memberScores: Record<string, {
+    matchScore: number;      // 0-1
+    reasons: string[];      // ["Bạn thích món cay", "Trong budget"]
+    suggestedItems: string[]; // Top 3 items for this member
+  }>;
+  createdAt: Date;
+}
+```
+
+#### Match Algorithm
+
+```typescript
+function calculateMatchScore(
+  member: UserPreference,
+  menuItems: MenuItem[],
+  groupContext: GroupContext
+): CircleRecommendation {
+  const scores = member.scores.map(item => ({
+    item,
+    score: calculateItemScore(item, member),
+    reasons: getMatchReasons(item, member)
+  }));
+
+  // Sort by score descending
+  scores.sort((a, b) => b.score - a.score);
+
+  return {
+    groupId: groupContext.id,
+    memberScores: {
+      [member.userId]: {
+        matchScore: scores[0].score,
+        reasons: scores[0].reasons,
+        suggestedItems: scores.slice(0, 3).map(s => s.item.name)
+      }
+    }
+  };
+}
+
+function calculateItemScore(item: MenuItem, pref: UserPreference): number {
+  let score = 0;
+
+  // Cuisine match (40%)
+  const cuisineMatch = pref.cuisineScores[item.category] || 0.5;
+  score += cuisineMatch * 0.4;
+
+  // Price match (30%)
+  const priceMatch = item.priceVND <= getMaxPrice(pref.priceRange) ? 1 : 0.5;
+  score += priceMatch * 0.3;
+
+  // Dietary match (20%)
+  const dietaryMatch = itemMeetsDietary(item, pref.dietary) ? 1 : 0;
+  score += dietaryMatch * 0.2;
+
+  // Spice tolerance (10%)
+  const spiceMatch = itemSpiceLevel(item) <= pref.spiceTolerance ? 1 : 0.5;
+  score += spiceMatch * 0.1;
+
+  return score;
+}
+```
+
+### 13.3 UI Flow: Menu Spin
+
+```
+┌─────────────────────────────────────────────────────┐
+│  📷 Chụp Menu                                      │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  ┌─────────────────────────────────────────────┐   │
+│  │                                             │   │
+│  │         [Camera Viewfinder]                │   │
+│  │                                             │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                     │
+│  Hoặc chọn ảnh có sẵn                            │
+│                                                     │
+│  [  📁 Chọn từ thư viện  ]                       │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  📋 Xác nhận Menu                                  │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  Đã nhận diện 15 món từ menu:                    │
+│                                                     │
+│  ✓ Cơm gà xối mỡ          45,000                │
+│  ✓ Cơm gà teriyaki        50,000                │
+│  ✓ Cơm gà curry           48,000                │
+│  ✓ Bún gà nướng           40,000                │
+│  ✗ ────────────────────── (có thể xóa)          │
+│                                                     │
+│  [ + Thêm món ]  [ Chỉnh sửa ]                   │
+│                                                     │
+│  ─────────────────────────────────────────────────  │
+│  Thêm món nào không có trên menu?                  │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  [ Quay với Menu này ] →                          │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  🎰 Kết quả Spin                                   │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  ┌─────────────────────────────────────────────┐   │
+│  │  Cơm gà xối mỡ                              │   │
+│  │  45,000đ                                    │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                     │
+│  ─────────────────────────────────────────────────  │
+│  🔮 AI Gợi ý cho cả nhóm:                        │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  👤 Minh: "Bạn thường thích món cay, món này    │
+│     hợp với khẩu vị của bạn ✓"                   │
+│                                                     │
+│  👤 Lan: "Món này trong budget của bạn,          │
+│     Lan's pick! ✓"                                 │
+│                                                     │
+│  👤 Tuấn: "Hơi cay nhưng bạn vẫn thích          │
+│     thử món mới đúng không? 🤙"                    │
+│                                                     │
+│  [ Chấp nhận ]  [ Quay lại ]                      │
+└─────────────────────────────────────────────────────┘
+```
+
+### 13.4 Privacy & Data
+
+- **Preference data:** Private by default, can share with circle
+- **Menu photos:** Can be shared or kept private
+- **AI suggestions:** Explainable ("Vì bạn thích...")
 
 ---
 
@@ -456,19 +913,18 @@ Xưng "mình – bạn"                          Xưng "quý khách"
 | File | Mô tả |
 |------|-------|
 | `brand/brand.md` | Brand Kit đầy đủ (định vị, màu, font, tone, logo, messaging) |
-| `brand/FOOD-ROULETTE-SITEMAP.md` | Sitemap & đặc tả thiết kế chi tiết (v2.2) |
+| `brand/FOOD-ROULETTE-SITEMAP.md` | Sitemap & đặc tả thiết kế chi tiết (v2.4) |
 | `brand/prompts.md` | File này — tổng hợp dạng prompt |
+| `docs/food_roulette_erd.drawio.xml` | ERD với Menu + AI entities |
+| `content/explore/spin-system-v2.md` | Chi tiết Spin System |
+| `content/explore/restaurant-partner-strategy.md` | Chiến lược Restaurant Partner |
+| `content/explore/menu-ai-strategy.md` | Menu Capture & AI Personalization |
 | `Content/feature.docx` | Mô tả 5 tính năng chính + metric |
 | `Content/pricing.docx` | 3 gói Free/Pro/Business + ROI |
-| `Content/solution.docx` | Câu chuyện theo 4 nhóm đối tượng |
-| `Food Roulette-web/app/` | (placeholder) sẽ chứa source |
-| `Food Roulette-web/content/` | (placeholder) sẽ chứa content MD/JSON |
-| `Videos/` | (placeholder) sẽ chứa video demo |
-| `ContentViral/` | (placeholder) sẽ chứa content viral |
 
 ---
 
 *Lưu ý:*
 - *Cập nhật file này mỗi khi thay đổi quyết định lớn. Nếu AI đọc sai, kiểm tra file này trước.*
 - *Mọi mâu thuẫn giữa file này và các tài liệu khác: ưu tiên `brand/prompts.md` → `brand/brand.md` → `brand/FOOD-ROULETTE-SITEMAP.md` → `Content/*.docx`.*
-- *Phiên bản: 2.2 · Ngày: 2026-07-24.*
+- *Phiên bản: 2.4 · Ngày: 2026-08-06.*
