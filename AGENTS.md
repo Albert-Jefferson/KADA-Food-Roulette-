@@ -20,7 +20,7 @@ Làm theo checklist này **mỗi lần** nhận task:
 - [ ] Nếu task liên quan design/UI → đọc `brand/brand.md` (màu, font, tone).
 - [ ] Nếu task liên quan feature flow / data model → đọc `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 - [ ] Nếu task liên quan marketing copy → đọc `content/source/*.docx`.
-- [ ] Nếu task liên quan code → đọc `app/README.md`.
+- [ ] Nếu task liên quan code → đọc `apps/web/` hoặc `backend/` structure.
 - [ ] Nếu có câu hỏi về quyết định chưa rõ → check `brand/prompts.md` §9 (Open questions) và hỏi user trước khi code.
 
 ## 3. Quy tắc vàng
@@ -41,9 +41,12 @@ Làm theo checklist này **mỗi lần** nhận task:
 - **Trong commit/PR:** Conventional Commits, tiếng Anh.
 
 ### 3.4 Trước khi tạo file mới
-- **Hỏi:** file này thuộc module nào? (component / screen / hook / util / config / type?)
+- **Hỏi:** file này thuộc module nào? (component / hook / util / config / type?)
 - **Đặt tên:** PascalCase cho component, camelCase cho hook/util, kebab-case cho folder.
-- **Vị trí:** đúng theo cấu trúc Expo Router (`app/`) hoặc theo module (`src/modules/<feature>/`).
+- **Vị trí:** theo Feature Module Pattern:
+  - Frontend: `apps/web/src/features/<feature>/`
+  - Backend: `backend/src/modules/<feature>/`
+  - Shared: `packages/<name>/`
 
 ### 3.5 Trước khi sửa code có sẵn
 - **Đọc** file đó + ít nhất 1 file liên quan trước khi sửa.
@@ -69,8 +72,8 @@ Mỗi task xong, báo cáo ngắn gọn:
 
 ✅ **Được phép:**
 - Đọc mọi file trong repo.
-- Tạo file mới trong `app/`, `content/explore/`, `brand/`.
-- Sửa code trong `app/`.
+- Tạo file mới trong `apps/web/src/features/`, `backend/src/modules/`, `content/explore/`, `brand/`.
+- Sửa code trong `apps/web/` và `backend/`.
 - Cập nhật comment trong code (nếu cần).
 - Refactor nhỏ trong cùng 1 file (không đổi API public).
 - Đề xuất cấu trúc mới (sẽ được user duyệt trước khi làm).

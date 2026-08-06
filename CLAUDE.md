@@ -18,32 +18,73 @@ Tagline: *"Không biết ăn gì? Để vòng quyết định."*
 
 ## 2. Trạng thái hiện tại
 
-- **Giai đoạn:** pre-implementation (chưa viết code).
+- **Giai đoạn:** Đang xây dựng cấu trúc scalable
 - **Branch:** `main`, sạch.
 - **Ngôn ngữ UI:** tiếng Việt.
 - **Ngôn ngữ code:** TypeScript.
+- **Backend:** Express.js + Prisma + MySQL (Docker)
 
-## 3. Cấu trúc repo
+## 3. Cấu trúc repo (Monorepo Scalable)
 
 ```
-.
-├── CLAUDE.md               ← File này (entry point cho AI)
-├── AGENTS.md               ← Vai trò & ràng buộc của AI
-├── README.md               ← Mô tả dự án cho người (con người)
-├── brand/                  ← Brand & design (đã có)
-│   ├── brand.md            ← Brand Kit đầy đủ
-│   ├── prompts.md          ← Single-source-of-truth dạng prompt cho AI
-│   └── FOOD-ROULETTE-SITEMAP.md  ← Sitemap & đặc tả thiết kế
-├── content/
-│   ├── source/             ← Nguyên liệu gốc (3 file .docx)
-│   ├── explore/            ← Note/thử nghiệm phái sinh từ source
-│   └── README.md           ← Cách dùng content/
-├── app/                    ← Source code (sẽ là Expo + Expo Router)
-│   └── README.md           ← Cấu trúc dự kiến
-├── Content/                ← (legacy) Nơi chứa file .docx gốc ban đầu
-├── ContentViral/           ← (placeholder) content viral
-├── Videos/                 ← (placeholder) video demo
-└── Food Roulette-web/      ← (placeholder) thư mục web placeholder
+KADA-Food-Roulette/
+├── apps/
+│   ├── web/                          # React + Vite web app
+│   │   ├── src/
+│   │   │   ├── api/                  # API client layer
+│   │   │   │   ├── client.ts         # Axios instance với interceptors
+│   │   │   │   ├── endpoints/        # API endpoint definitions
+│   │   │   │   └── index.ts
+│   │   │   ├── components/           # Shared components
+│   │   │   │   └── layout/           # Layout components
+│   │   │   ├── features/             # Feature-based modules
+│   │   │   │   ├── auth/            # Auth feature
+│   │   │   │   ├── roulette/        # Spin/Roulette feature
+│   │   │   │   ├── groups/         # Group spin feature
+│   │   │   │   ├── lockets/        # Locket feature
+│   │   │   │   ├── restaurants/    # Restaurant feature
+│   │   │   │   ├── profile/        # Profile feature
+│   │   │   │   ├── checkin/        # Check-in feature
+│   │   │   │   └── rewards/        # Rewards/Gamification
+│   │   │   ├── hooks/              # Global hooks
+│   │   │   ├── stores/             # Zustand stores
+│   │   │   ├── lib/                # Utils & constants
+│   │   │   └── pages/              # Route pages (thin wrappers)
+│   │   └── package.json
+│   │
+│   └── mobile/                       # Expo + React Native (future)
+│       └── app/                      # Expo Router pages
+│
+├── packages/                         # Shared code (published as npm)
+│   ├── ui/                          # Design system
+│   ├── types/                       # Shared TypeScript types
+│   ├── config/                      # ESLint, Prettier, TSConfig
+│   └── utils/                       # Shared utilities
+│
+├── services/                         # Backend microservices (future-ready)
+│   ├── gateway/                      # API Gateway
+│   └── (extendable)                  # notification, analytics...
+│
+├── backend/                          # Main backend (Express.js + Prisma)
+│   ├── prisma/                      # Database schema
+│   └── src/
+│       ├── modules/                 # Feature modules
+│       └── shared/                  # Shared middleware & utils
+│
+├── docker/                           # Docker configs
+├── scripts/                          # Dev scripts
+└── CLAUDE.md                         # File này (entry point cho AI)
+```
+
+### Feature Module Pattern
+
+```
+features/[feature]/
+├── components/          # Feature-specific components
+├── hooks/              # Feature hooks (TanStack Query)
+├── api/                # Feature API calls
+├── types/              # Feature types
+└── index.ts            # Public exports
 ```
 
 ## 4. Nơi đọc chi tiết (theo độ ưu tiên)
@@ -66,20 +107,46 @@ brand/prompts.md  >  brand/brand.md  >  brand/FOOD-ROULETTE-SITEMAP.md  >  conte
 
 ## 5. Stack công nghệ (đã chốt)
 
+### Backend
 | Layer | Lựa chọn |
 |-------|----------|
-| App | Expo SDK 52 + Expo Router + TypeScript (EAS Build) |
-| UI | NativeWind (Tailwind cho RN) + tokens Earthy từ `brand/brand.md` |
-| Animation | Reanimated 3 + Moti (spin wheel) |
+| Runtime | Node.js 20 LTS |
+| Framework | Express.js |
+| ORM | Prisma |
+| Database | MySQL 8.0 (Docker local) / PlanetScale (cloud) |
+| Auth | JWT + bcryptjs |
+| API | REST |
+
+### Frontend (Web)
+| Layer | Lựa chọn |
+|-------|----------|
+| Framework | React 19 + TypeScript |
+| Build | Vite 6 |
+| Styling | Tailwind CSS 3 |
+| Routing | React Router DOM 7 |
+| State | Zustand |
+| Data fetching | TanStack Query |
+| HTTP | Axios |
+
+### Frontend (Mobile - Future)
+| Layer | Lựa chọn |
+|-------|----------|
+| Framework | Expo SDK 52 + Expo Router |
+| Styling | NativeWind (Tailwind cho RN) |
+| Animation | Reanimated 3 + Moti |
 | State | Zustand + TanStack Query |
-| Map | react-native-maps + OpenStreetMap tiles |
-| Backend | Supabase (Postgres + Auth + Storage + Realtime) |
-| DB extension | PostGIS (query bán kính) |
-| Camera | expo-image-picker (`cameraOnly: true`) |
+| Map | react-native-maps + OpenStreetMap |
+| Camera | expo-image-picker |
 | GPS | expo-location |
-| Push | Expo Push Notifications |
-| Deploy | EAS Build + Supabase Cloud |
-| CI/CD | EAS Submit + GitHub Actions |
+
+### Infrastructure
+| Layer | Lựa chọn |
+|-------|----------|
+| Container | Docker + Docker Compose |
+| Backend Hosting | Railway / Render (free tier) |
+| Web Hosting | Vercel / Netlify (free tier) |
+| DB Cloud | PlanetScale / Supabase (free tier) |
+| CI/CD | GitHub Actions |
 
 ## 6. Phạm vi v1.0 (MVP)
 
@@ -101,7 +168,34 @@ brand/prompts.md  >  brand/brand.md  >  brand/FOOD-ROULETTE-SITEMAP.md  >  conte
 
 Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 
-## 8. Quy ước khi viết code
+---
+
+## 8. Kiến trúc Scalable & Extensible
+
+### Cấu trúc Monorepo
+- `apps/` - Applications deployable (web, mobile)
+- `packages/` - Shared code publish as npm
+- `services/` - Microservices (future-ready)
+- `backend/` - Main backend với module pattern
+
+### Khi nào cần tách microservice?
+| Trigger | Action |
+|---------|--------|
+| Auth bottleneck | Tách `auth-service` |
+| Real-time cần nhiều | Thêm WebSocket service |
+| Analytics phức tạp | Tách `analytics-service` |
+
+### Technology Swap Options
+| Component | Current | Swap to |
+|-----------|---------|---------|
+| Database | MySQL | PostgreSQL |
+| ORM | Prisma | Drizzle |
+| API | Express | NestJS |
+| Auth | JWT | Auth0/Clerk |
+
+---
+
+## 9. Quy ước khi viết code
 
 - **Ngôn ngữ:** TypeScript, strict mode.
 - **Style:** ESLint + Prettier (Expo defaults + Airbnb-ish).
@@ -110,13 +204,13 @@ Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 - **Folder trong app:** dùng Expo Router (file-based routing, `app/`).
 - **Tailwind tokens:** map 1-1 với `brand/brand.md` — đặt trong `app/tailwind.config.js`.
 
-## 9. Cách dùng file này
+## 10. Cách dùng file này
 
 1. **Bắt đầu chat mới với AI?** Copy nội dung file này + `brand/prompts.md` (hoặc copy nguyên §0 của `prompts.md`) là đủ.
 2. **AI đang đọc nhầm spec?** Trỏ AI về `brand/prompts.md` và `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 3. **Cập nhật spec?** Sửa `brand/prompts.md` trước (single-source-of-truth), rồi sửa các file liên quan.
 
-## 10. Dataset Reference
+## 11. Dataset Reference
 
 ### googleplaystore_cleaned.csv
 
