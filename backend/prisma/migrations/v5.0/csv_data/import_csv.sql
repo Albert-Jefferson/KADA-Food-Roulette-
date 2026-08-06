@@ -41,10 +41,10 @@ IGNORE 1 ROWS
 (id, name, description, spins_count, price_usd, is_active, created_at);
 
 -- ============================================================
--- 4. Import Groups
+-- 4. Import Spin Groups
 -- ============================================================
 LOAD DATA INFILE CONCAT(@csv_path, '004_groups.csv')
-INTO TABLE groups
+INTO TABLE spin_groups
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'

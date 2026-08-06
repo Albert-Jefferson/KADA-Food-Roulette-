@@ -1,4 +1,27 @@
-# ERD Migration Notes v2.7 to v3.0
+# ERD Migration Notes
+
+> SQL migration scripts and database trigger definitions
+> **Current Version:** v5.0
+> **Date:** 2026-08-06
+
+---
+
+## Quick Start (v5.0)
+
+```bash
+# 1. Create database
+mysql -u root -p < backend/prisma/migrations/v5.0/000_create_database.sql
+
+# 2. Create tables
+mysql -u root -p food_roulette < backend/prisma/migrations/v5.0/complete_schema.sql
+
+# 3. Seed test data
+mysql -u root -p food_roulette < backend/prisma/migrations/v5.0/seed_data.sql
+```
+
+---
+
+## Legacy Migrations (v2.x - v4.x)
 
 > SQL migration scripts and database trigger definitions for ERD v3.0 (4NF Normalized)
 
