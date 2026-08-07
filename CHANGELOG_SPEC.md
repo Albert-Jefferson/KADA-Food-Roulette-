@@ -52,6 +52,40 @@
 
 ### 2026-08-06
 
+### Added
+
+- **Backend Prisma Setup v5.22.0**
+  - By: AI Assistant
+  - Via: Cursor
+  - Files affected:
+    - `backend/package.json` (new - Node.js project setup)
+    - `backend/.env` (new - DATABASE_URL config)
+    - `backend/prisma/schema.prisma` (updated - restored DATABASE_URL)
+    - `backend/prisma/migrations/v5.0/index_performance.sql` (new)
+    - `backend/prisma/migrations/v5.0/constraints_validation.sql` (new)
+    - `backend/prisma/migrations/v5.0/enum_validation.sql` (new)
+    - `backend/prisma/migrations/v5.0/cascade_delete_validation.sql` (new)
+    - `backend/prisma/migrations/v5.0/edge_cases_validation.sql` (new)
+    - `backend/src/test/api-integration.test.ts` (new)
+    - `backend/prisma/migrations/v5.0/README_VALIDATION.md` (new)
+
+  **Prisma Version Decision:**
+  - Attempted: Prisma 7.x (breaking changes, `@prisma/adapter-mysql` not available)
+  - Solution: Downgraded to Prisma 5.22.0 (stable, production-ready)
+  - `datasource url` kept in schema.prisma (required for v5.x)
+
+  **Validation Files Created (6 checks):**
+  1. `index_performance.sql` - EXPLAIN queries, verify index usage
+  2. `constraints_validation.sql` - NOT NULL, UNIQUE, FK constraints
+  3. `enum_validation.sql` - All enum values validation
+  4. `cascade_delete_validation.sql` - Cascade behavior testing
+  5. `edge_cases_validation.sql` - Boundary conditions, NULL handling
+  6. `api-integration.test.ts` - Prisma client CRUD operations
+
+---
+
+### 2026-08-06
+
 #### Added
 
 - **ERD v2.6 - SQL Architecture Review Fixes**
@@ -128,11 +162,34 @@
 
 ---
 
+### 2026-08-07
+
+### Changed
+
+- **Pricing §4 - Chi tiết đầy đủ (B2C + B2B)**
+  - By: AI Assistant
+  - Via: Cursor
+  - Spec: `brand/prompts.md` §4
+  - Files affected:
+    - `brand/prompts.md` (updated §4)
+  - Change:
+    - Thêm 2 mô hình pricing: B2C (Subscription) và B2B (Fixed + PPV)
+    - B2C: Free / Pro (59k/tháng hoặc 490k/năm)
+    - B2C: Spin Packs (Starter 5/15k, Standard 20/59k, Premium 100/199k)
+    - B2B: 4 tiers - Basic (free), Bronze (99k+5k PPV), Silver (199k+4k PPV), Gold (399k+3k PPV)
+    - Thêm PPV verification mechanism và billing example
+    - Thêm break-even analysis cho B2B
+    - Thêm chính sách B2B (trial, guarantee, no per-seat)
+  - Source: `content/explore/restaurant-partner-strategy.md`
+  - Note: MVP v1.0 chỉ cần Free + Spin Packs + Basic Restaurant Partner
+
+---
+
 ## Current Spec Versions
 
 | File | Version | Date | Last Change |
 |------|---------|------|-------------|
-| `brand/prompts.md` | 2.4 | 2026-08-06 | Added §13 Menu Capture + AI |
+| `brand/prompts.md` | 2.6 | 2026-08-07 | Updated Pricing §4 with B2C + B2B model |
 | `brand/brand.md` | - | - | - |
 | `brand/FOOD-ROULETTE-SITEMAP.md` | 2.4 | 2026-08-06 | Added §19.15-16 |
 | `backend/prisma/schema.prisma` | 5.0 | 2026-08-06 | Synced with v5.0 schema |
@@ -326,6 +383,14 @@
   - 5 votes (accept/reject)
   - 5 lockets (public/friends/private)
   - 3 check-ins (completed/pending)
+
+  **Validation Queries (6 queries):**
+  - Query 1: Group Spin Complete Workflow (session → candidates → votes → result)
+  - Query 2: Locket Feed with Visibility Rules (PUBLIC/FRIENDS/PRIVATE)
+  - Query 3: Check-in Verification Complex (GPS + Locket + Restaurant matching)
+  - Query 4: Spin Wallet Audit Trail (running balance + integrity check)
+  - Query 5: Restaurant Recommendation Engine (eligibility scoring)
+  - Bonus: Friendship Network Analysis (mutual friends)
 
 ---
 

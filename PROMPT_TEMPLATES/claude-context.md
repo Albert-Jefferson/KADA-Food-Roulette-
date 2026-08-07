@@ -1,7 +1,7 @@
 # Prompt Template for Claude
 
 > Copy/paste vào Claude (claude.ai) khi bắt đầu session mới
-> **Version:** 1.0 · **Date:** 2026-08-06
+> **Version:** 1.1 · **Date:** 2026-08-07
 
 ---
 
@@ -31,14 +31,35 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 - Review thật
 
 ## Tech Stack
-- Frontend: React Native + Expo + TypeScript + NativeWind
-- Animation: Reanimated 3 + Moti
+- Frontend (Web): React 19 + Vite + TypeScript + Tailwind CSS
+- Frontend (Mobile - Future): React Native + Expo + NativeWind
+- Animation: Reanimated 3 + Moti (mobile)
 - State: Zustand + TanStack Query
-- Backend: Supabase + PostGIS
-- Design: Earthy/warm-light-first
+- Backend: Express.js + Prisma + MySQL (Docker)
+- Design: Earthy/warm-light-first (nâu-vàng)
+
+## Project Structure
+```
+KADA-Food-Roulette/
+├── Food Roulette-web/     # React + Vite web app
+├── backend/              # Express.js + Prisma + MySQL
+├── brand/               # Design & specs
+├── Content/             # Strategy docs
+├── docs/               # ERD & technical
+├── .agents/skills/     # Agent skills (Cursor)
+└── PROMPT_TEMPLATES/   # Context cho AI tools
+```
 
 ## Spec Priority Order
 brand/prompts.md > brand/brand.md > brand/FOOD-ROULETTE-SITEMAP.md > content/*.docx
+
+## Spec Files (đọc trong repo hoặc paste đoạn liên quan)
+- `brand/prompts.md` — Single source of truth
+- `brand/brand.md` — Design tokens
+- `brand/FOOD-ROULETTE-SITEMAP.md` — Feature specs
+- `VIBE_RULES.md` — Golden rules
+- `AGENTS.md` — Agent conventions
+- `CLAUDE.md` — Entry point
 
 ## 10 Golden Rules (MANDATORY)
 1. Đọc spec trước khi code
@@ -51,6 +72,11 @@ brand/prompts.md > brand/brand.md > brand/FOOD-ROULETTE-SITEMAP.md > content/*.d
 8. Mỗi feature có owner
 9. Không commit credentials
 10. Khi không chắc — hỏi
+
+## Skills (Cursor only)
+Skills trong `.agents/skills/` chỉ hoạt động với Cursor IDE. Các AI tools khác tuân thủ rules trực tiếp từ:
+- `VIBE_RULES.md` — 10 golden rules
+- `AGENTS.md` — Agent conventions & permissions
 
 ## Key Constraints
 - Group.member_ids.length <= 20
@@ -110,4 +136,4 @@ Paste context → "Tôi cần làm [task]. Đây là spec: [link/path]"
 
 ---
 
-*Paste toàn bộ vào Claude · 2026-08-06*
+*Paste toàn bộ vào Claude · 2026-08-07*

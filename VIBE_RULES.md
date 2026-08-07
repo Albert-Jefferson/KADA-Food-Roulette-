@@ -221,6 +221,158 @@ brand/prompts.md > brand/brand.md > brand/FOOD-ROULETTE-SITEMAP.md > content/*.d
 
 ---
 
+## 8. Cross-File Consistency — Đồng Bộ Toàn Bộ Files
+
+### Nguyên Tắc Vàng
+
+> **Khi thay đổi BẤT KỲ file nào trong dự án, AI PHẢI tìm và cập nhật TẤT CẢ các file liên quan.**
+
+### Tại Sao Quan Trọng
+
+Trong Food Roulette, có nhiều files chứa cùng thông tin:
+- ERD XML (`docs/*.xml`) ↔ Prisma Schema (`backend/prisma/schema.prisma`)
+- Prisma Schema ↔ SQL Migrations (`backend/prisma/migrations/`)
+- Prompt Templates ↔ Spec Files (`brand/*.md`)
+- Spec Files ↔ CHANGELOG
+
+**Nếu không đồng bộ** → inconsistencies → bugs → developer confusion.
+
+---
+
+### Bảng Mapping Files Liên Quan
+
+| Khi thay đổi... | Phải đồng bộ... |
+|------------------|------------------|
+| `docs/*.xml` (ERD) | `backend/prisma/schema.prisma`, `docs/ERD_MIGRATION_NOTES.md`, `backend/prisma/migrations/` |
+| `backend/prisma/schema.prisma` | `docs/*.xml`, `backend/prisma/migrations/*.sql` |
+| `backend/prisma/migrations/` | `backend/prisma/schema.prisma`, `docs/ERD_MIGRATION_NOTES.md` |
+| `brand/prompts.md` | `brand/brand.md`, `brand/FOOD-ROULETTE-SITEMAP.md`, `PROMPT_TEMPLATES/*.md` |
+| `brand/brand.md` | `brand/prompts.md`, `app/tailwind.config.js` |
+| `CHANGELOG_SPEC.md` | (không cần sync, nhưng phải update khi spec thay đổi) |
+| `VIBE_RULES.md` | `CLAUDE.md`, `AGENTS.md`, `PROMPT_TEMPLATES/chatgpt-context.md` |
+
+---
+
+### Quy Trình Khi Thay Đổi
+
+#### Bước 1: Tìm tất cả files liên quan
+
+```bash
+# Tìm files liên quan đến ERD
+rg -l "SpinSession|Locket|CheckIn" --type prisma,sql,md
+
+# Tìm files reference đến entity cụ thể
+rg "SpinWallet" -g "*.prisma" -g "*.sql" -g "*.md"
+```
+
+#### Bước 2: Đọc tất cả files liên quan
+
+Trước khi sửa, phải đọc ít nhất:
+- File đang sửa
+- Tất cả files trong cùng "group" (xem bảng trên)
+- Files trong `docs/` nếu là schema change
+- Files trong `backend/prisma/` nếu là code change
+
+#### Bước 3: Sửa tất cả cùng lúc
+
+**Sửa KHÔNG ĐƯỢC sửa chỉ 1 file.** Phải sửa tất cả files liên quan trong cùng một lần.
+
+#### Bước 4: Verify consistency
+
+```bash
+# Kiểm tra schema và migration khớp nhau
+npm run db:validate
+
+# Kiểm tra typecheck
+npm run typecheck
+
+# Kiểm tra lint
+npm run lint
+```
+
+---
+
+### Checklist Đồng Bộ
+
+Trước khi commit, verify:
+
+- [ ] **Schema change?**
+  - [ ] `backend/prisma/schema.prisma` đã update
+  - [ ] `backend/prisma/migrations/` đã update (hoặc tạo migration mới)
+  - [ ] `docs/*.xml` ERD đã update
+  - [ ] `docs/ERD_MIGRATION_NOTES.md` đã update
+
+- [ ] **Spec change?**
+  - [ ] `brand/prompts.md` đã update
+  - [ ] `brand/brand.md` đã update (nếu design thay đổi)
+  - [ ] `brand/FOOD-ROULETTE-SITEMAP.md` đã update
+  - [ ] `PROMPT_TEMPLATES/` đã update
+  - [ ] `CHANGELOG_SPEC.md` đã log change
+
+- [ ] **UI/Design change?**
+  - [ ] `app/tailwind.config.js` đã update (nếu tokens thay đổi)
+  - [ ] `brand/brand.md` đã update
+
+- [ ] **Process/Rule change?**
+  - [ ] `VIBE_RULES.md` đã update
+  - [ ] `CLAUDE.md` đã update
+  - [ ] `AGENTS.md` đã update
+  - [ ] Tất cả `PROMPT_TEMPLATES/*.md` đã update
+
+---
+
+### Cảnh Báo Red Flags
+
+🚨 **STOP ngay nếu thấy:**
+
+| Red Flag | Hành động |
+|----------|-----------|
+| Sửa schema nhưng không sửa ERD | Sửa ERD trước, rồi generate lại schema |
+| Sửa spec nhưng không log CHANGELOG | Log ngay, không commit |
+| Sửa prompts.md nhưng không sync templates | Sync tất cả templates |
+| Sửa brand tokens nhưng không update tailwind | Update tailwind.config.js |
+| Thêm field mới nhưng không thêm migration | Tạo migration trước |
+
+---
+
+### AI-Specific Rules
+
+#### Cursor / Claude (file-based):
+- Sau khi sửa 1 file, **tự hỏi**: "File nào khác cần sửa?"
+- Dùng `Grep` để tìm references: `rg "EntityName" -g "*.prisma" -g "*.sql"`
+
+#### ChatGPT / Gemini (prompt-based):
+- Khi nhận task, **liệt kê** tất cả files cần thay đổi
+- Sau khi done, **verify** tất cả files đã được update
+
+---
+
+## 9. Exception Cases
+
+### Khi nào được sửa 1 file?
+
+| Exception | Điều kiện |
+|-----------|-----------|
+| Chỉ đọc | Không sửa gì, chỉ đọc để hiểu context |
+| Typo fix | Chỉ fix lỗi chính tả, không đổi logic |
+| Comment update | Chỉ cập nhật comment không ảnh hưởng logic |
+| README docs | File docs không ảnh hưởng code |
+
+### Khi nào PHẢI sửa nhiều files?
+
+| Trường hợp | Files phải update |
+|------------|-------------------|
+| Thêm entity mới | schema.prisma + ERD XML + migration + ERD_MIGRATION_NOTES |
+| Đổi field | schema.prisma + migration + tất cả queries dùng field đó |
+| Đổi feature flag | prompts.md + sitemap + CHANGELOG |
+| Đổi design token | brand.md + tailwind.config.js |
+
+---
+
+*Lưu ý: Đây là rule bắt buộc. Không tuân thủ = inconsistent codebase = bug.*
+
+---
+
 ## 7. Related Files
 
 | File | Mục đích |

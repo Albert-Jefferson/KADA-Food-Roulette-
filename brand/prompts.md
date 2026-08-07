@@ -277,31 +277,172 @@ Food Roulette là ứng dụng **giải quyết "nghịch lý lựa chọn"** kh
 
 ---
 
-## §4 · Pricing (từ `Content/pricing.docx`)
+## §4 · Pricing
 
-> **Lưu ý:** pricing v1.0 đã có trong docx nhưng **chưa được thống nhất** có triển khai trong v1.0 của MVP hay không. Khi code, đề xuất làm **free + tùy chọn Pro/Business sau**.
+### Tổng quan
 
-### 3 gói
+Food Roulette có **2 mô hình pricing** cho 2 đối tượng khác nhau:
 
-| Gói | Giá | Đối tượng |
-|-----|-----|-----------|
-| **Free** | 0đ / mãi mãi | Người dùng cá nhân muốn thử spin, đọc review |
-| **Pro** | 59.000đ / tháng | Cặp đôi, nhóm bạn, food blogger, dân VP cần spin không giới hạn |
-| **Business** | 299.000đ / tháng | Nhà hàng, quán ăn muốn tiếp cận khách hàng |
+| Đối tượng | Mô hình | Chi tiết |
+|------------|---------|----------|
+| **B2C - Người dùng app** | Subscription | Free / Pro |
+| **B2B - Restaurant Partner** | Fixed Tier + PPV | 4 tiers + Pay-Per-Visit |
 
-### ROI cho Pro (theo docx)
-- Tiết kiệm ~600.000đ/tháng (12 giờ × 50.000đ/giờ).
-- ROI = **916%** · Hoàn vốn **< 3 ngày**.
+---
 
-### ROI cho Business (theo docx)
-- Doanh thu mới ~12.000.000đ/tháng + tiết kiệm ads ~1.700.000đ.
-- ROI = **4.482%** · Hoàn vốn **< 1 ngày**.
+### 4.1 B2C: Người dùng app
 
-### FAQ trích từ docx
-- Có thể đổi gói bất kỳ lúc (nâng cấp tính theo ngày, hạ cấp từ chu kỳ sau).
-- Pro tự động gia hạn qua ATM/Visa/Momo, hủy trong Cài đặt.
-- Pro có **7 ngày dùng thử miễn phí**, không cần nhập thẻ.
-- Review chỉ từ người dùng đã verify SĐT (chú thích: v1.0 có thể chưa áp dụng).
+#### Phương pháp: Subscription Model
+
+| Gói | Giá tháng | Giá năm | Chiết khấu năm | Đối tượng |
+|------|-----------|---------|-----------------|-----------|
+| **Free** | 0đ | 0đ | - | Thử nghiệm, đọc review |
+| **Pro** | 59.000đ | 490.000đ | ~30% | Cá nhân, cặp đôi, nhóm bạn |
+
+#### Spin Packs (IAP - mua 1 lần)
+
+| Pack | Spins | Giá |
+|------|-------|------|
+| Starter | 5 spins | 15.000đ |
+| Standard | 20 spins | 59.000đ |
+| Premium | 100 spins | 199.000đ |
+
+#### Gói Free - Giới hạn
+
+| Tính năng | Giới hạn |
+|------------|----------|
+| Spin/ngày | 5 lần |
+| Tạo group spin | Có |
+| Xem review | Có |
+| Locket camera | 3 ảnh/tháng |
+| Ad banner | Có |
+
+#### Gói Pro - Quyền lợi
+
+| Tính năng | Giới hạn |
+|------------|----------|
+| Spin/ngày | Không giới hạn |
+| Tạo group spin | Có |
+| Xem review | Có |
+| Locket camera | Không giới hạn |
+| Ad banner | Không |
+| 7 ngày dùng thử | Có (không cần nhập thẻ) |
+
+---
+
+### 4.2 B2B: Restaurant Partner
+
+#### Phương pháp: Hybrid (Fixed Tier + Pay-Per-Visit)
+
+> **Khác với ShopeeFood/GrabFood (30% per order)**: Food Roulette **0% per order**, chỉ trả khi có khách THẬT SỰ đến check-in.
+
+#### Pricing Tiers
+
+| Tier | Fixed Fee | PPV Rate | Giá/spin* | Features |
+|------|-----------|----------|------------|----------|
+| **Basic** | Miễn phí | - | - | Badge only |
+| **Bronze PPV** | 99.000đ/tháng | 5.000đ/visit | ~200đ/ngày | Badge + Basic analytics |
+| **Silver PPV** | 199.000đ/tháng | 4.000đ/visit | ~400đ/ngày | Top 5 + Promo codes |
+| **Gold PPV** | 399.000đ/tháng | 3.000đ/visit | ~800đ/ngày | Top 3 + Full analytics + Priority |
+
+*Giả định: 30 visits/tháng
+
+#### Feature Breakdown
+
+| Feature | Basic | Bronze | Silver | Gold |
+|---------|:-----:|:------:|:------:|:----:|
+| Verified Badge | ✅ | ✅ | ✅ | ✅ |
+| Basic analytics | ❌ | ✅ | ✅ | ✅ |
+| Featured Placement | ❌ | ❌ | ✅ (Top 5) | ✅ (Top 3) |
+| Promo Codes | ❌ | ❌ | ✅ | ✅ |
+| Full analytics | ❌ | ❌ | ❌ | ✅ |
+| Priority Support | ❌ | ❌ | ❌ | ✅ |
+| Dedicated Account Manager | ❌ | ❌ | ❌ | ✅ |
+
+#### PPV Verification Mechanism
+
+```
+1. Khách đến quán
+       ↓
+2. Mở app → Tap "Check-in"
+       ↓
+3. App verify GPS (trong 100m của quán)
+       ↓
+4. Nếu verified → Tạo RestaurantVisit record
+       ↓
+5. End of month → Billing = fixed + (visits × ppvRate)
+```
+
+#### Billing Example (Silver PPV)
+
+```
+Fixed fee: 199.000đ/tháng
+PPV rate: 4.000đ/visit
+
+If 30 visits in month:
+Total = 199.000 + (30 × 4.000)
+     = 199.000 + 120.000
+     = 319.000đ/tháng
+
+Compare to ShopeeFood (30 orders × 35k × 30%):
+= 315.000đ → About same!
+
+But: Only pay for REAL visits ✅
+```
+
+#### Break-even Analysis
+
+| Tier | Fixed | PPV | Break-even Visits |
+|------|-------|-----|-------------------|
+| Bronze | 99k | 5k | 20/tháng |
+| Silver | 199k | 4k | 50/tháng |
+| Gold | 399k | 3k | 133/tháng |
+
+---
+
+### 4.3 Chính sách Billing (B2C)
+
+#### Thanh toán
+- **Tự động gia hạn** qua: ATM nội địa, Visa/MasterCard, Momo
+- **Hủy** trong mục Cài đặt (Settings)
+
+#### Upgrade/Downgrade/Cancel
+
+| Action | Xử lý |
+|---------|--------|
+| **Upgrade** | Prorated, active ngay |
+| **Downgrade** | Cuối chu kỳ, không refund |
+| **Cancel** | Giữ quyền đến hết chu kỳ đã paid |
+
+#### Prorated Billing
+- **Công thức**: `(Giá gói mới - Giá gói cũ) × (Số ngày còn lại / Tổng ngày chu kỳ)`
+
+---
+
+### 4.4 Chính sách B2B
+
+| Policy | Chi tiết |
+|--------|----------|
+| **Trial** | 7 ngày free Gold (không cần credit card) |
+| **Guarantee** | 0 đơn = Hoàn tiền 100% nếu 0 visit trong 30 ngày |
+| **Team License** | Không giới hạn nhân viên quản lý tài khoản |
+| **Per-Seat** | Không tính theo số user trong nhà hàng |
+
+---
+
+### 4.5 ROI Claims
+
+#### Pro (B2C)
+- Tiết kiệm ~600.000đ/tháng (12 giờ × 50.000đ/giờ)
+- ROI = **916%** · Hoàn vốn **< 3 ngày**
+
+#### Restaurant Partner (B2B)
+- So với ShopeeFood 30% order: tiết kiệm ~1.9M/tháng
+- ROI = **4.482%** · Hoàn vốn **< 1 ngày**
+
+---
+
+> **Lưu ý:** Pricing này là spec chi tiết. Áp dụng cho **v1.1+**. MVP v1.0 chỉ cần Free + Spin Packs + Basic Restaurant Partner.
 
 ---
 

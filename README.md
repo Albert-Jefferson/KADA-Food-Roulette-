@@ -147,6 +147,7 @@ mysql -u root -p food_roulette < backend/prisma/migrations/v5.0/seed_data.sql
 | `complete_schema.sql` | Tạo tất cả 15 tables |
 | `seed_data.sql` | Seed data cho testing |
 | `csv_data/import_csv.sql` | Import từ CSV (future) |
+| `validation_queries.sql` | 5 complex validation queries |
 
 ### Tables (v5.0)
 

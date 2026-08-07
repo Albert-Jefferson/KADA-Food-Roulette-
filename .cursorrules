@@ -54,18 +54,26 @@ Design: Earthy/warm-light-first
 ## Project Structure
 
 ```
-apps/
-  └── web/                    # Frontend (React 18 + Vite)
-backend/
-  └── src/                    # Backend modules
-brand/
-  ├── prompts.md             # Single source of truth
-  ├── brand.md               # Design tokens
-  └── FOOD-ROULETTE-SITEMAP.md  # Feature specs
-content/
-  └── explore/               # Strategy docs
-docs/
-  └── food_roulette_erd.drawio.xml  # ERD
+KADA-Food-Roulette/
+├── Food Roulette-web/              # React + Vite web app
+│   └── src/
+│       ├── features/              # Feature-based modules
+│       ├── components/           # Shared components
+│       └── ...
+├── backend/                       # Express.js + Prisma
+│   ├── prisma/                   # Database schema & migrations
+│   └── src/                      # Backend source
+├── brand/                         # Design & brand docs
+│   ├── prompts.md               # Single source of truth
+│   ├── brand.md                 # Design tokens
+│   └── FOOD-ROULETTE-SITEMAP.md # Feature specs
+├── Content/                       # Strategy & exploration docs
+│   └── explore/                  # Strategy docs
+├── docs/                          # ERD & technical docs
+├── .agents/skills/               # Agent skills (Cursor)
+├── VIBE_RULES.md                 # Golden rules
+├── CLAUDE.md                      # Entry point
+└── AGENTS.md                     # Agent conventions
 ```
 
 ---

@@ -1,7 +1,7 @@
 # Prompt Template for ChatGPT
 
 > Copy/paste vào ChatGPT khi bắt đầu session mới
-> **Version:** 1.0 · **Date:** 2026-08-06
+> **Version:** 1.2 · **Date:** 2026-08-07
 
 ---
 
@@ -24,11 +24,32 @@ Mobile app (React Native + Expo) cho người Việt chọn quán ăn ngẫu nhi
 Tagline: "Không biết ăn gì? Để vòng quyết định."
 
 ## Tech Stack
-- Frontend: React Native + Expo + TypeScript + NativeWind
-- Animation: Reanimated 3 + Moti
+- Frontend (Web): React 19 + Vite + TypeScript + Tailwind CSS
+- Frontend (Mobile - Future): React Native + Expo + NativeWind
+- Animation: Reanimated 3 + Moti (mobile)
 - State: Zustand + TanStack Query
-- Backend: Supabase + PostGIS
+- Backend: Express.js + Prisma + MySQL (Docker)
 - Design: Earthy/warm-light-first (nâu-vàng)
+
+## Project Structure
+```
+KADA-Food-Roulette/
+├── Food Roulette-web/     # React + Vite web app
+├── backend/              # Express.js + Prisma + MySQL
+├── brand/               # Design & specs
+├── Content/             # Strategy docs
+├── docs/               # ERD & technical
+├── .agents/skills/     # Agent skills (Cursor)
+└── PROMPT_TEMPLATES/   # Context cho AI tools
+```
+
+## Spec Files (đọc trong repo hoặc paste đoạn liên quan)
+- `brand/prompts.md` — Single source of truth
+- `brand/brand.md` — Design tokens
+- `brand/FOOD-ROULETTE-SITEMAP.md` — Feature specs
+- `VIBE_RULES.md` — Golden rules
+- `AGENTS.md` — Agent conventions
+- `CLAUDE.md` — Entry point
 
 ## Key Specs
 - Auth: Supabase (email + Google)
@@ -38,10 +59,36 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 - Menu Capture: AI OCR đọc menu (v1.1)
 - AI Personalization: Suggest best match cho group (v1.1)
 
+## Pricing Model
+
+### B2C - Người dùng app
+- **Free**: 0đ, 5 spins/ngày, 3 locket/tháng, có ad
+- **Pro**: 59.000đ/tháng hoặc 490.000đ/năm (~30% off)
+- **Spin Packs**: Starter (5 spins/15k), Standard (20 spins/59k), Premium (100 spins/199k)
+
+### B2B - Restaurant Partner (Fixed + PPV)
+| Tier | Fixed | PPV | Features |
+|------|-------|-----|----------|
+| Basic | Miễn phí | - | Badge only |
+| Bronze | 99k/tháng | 5k/visit | Badge + Basic analytics |
+| Silver | 199k/tháng | 4k/visit | Top 5 + Promo codes |
+| Gold | 399k/tháng | 3k/visit | Top 3 + Full analytics + Priority |
+
+### Billing Policy
+- **Upgrade**: Prorated, active ngay
+- **Downgrade**: Cuối chu kỳ, không refund
+- **Cancel**: Giữ quyền đến hết chu kỳ đã paid
+- **B2B Guarantee**: 0 đơn = Hoàn tiền 100% nếu 0 visit/30 ngày
+
 ## Spec Files (đọc online):
 - brand/prompts.md: https://github.com/.../brand/prompts.md
 - brand/brand.md: Design tokens
 - VIBE_RULES.md: Golden rules
+
+## Skills (Cursor only)
+Skills trong `.agents/skills/` chỉ hoạt động với Cursor IDE. Các AI tools khác tuân thủ rules trực tiếp từ:
+- `VIBE_RULES.md` — 10 golden rules
+- `AGENTS.md` — Agent conventions & permissions
 
 ## Ràng buộc quan trọng
 1. Group.member_ids.length <= 20
@@ -49,6 +96,19 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 3. 2 display names: private vs public
 4. Restaurant only in roulette khi status='approved'
 5. Không tự thêm tính năng
+
+## Cross-File Consistency (CRITICAL)
+
+> **Khi thay đổi file nào, PHẢI cập nhật TẤT CẢ files liên quan.**
+
+| Thay đổi... | Phải đồng bộ... |
+|---------------|------------------|
+| ERD (docs/*.xml) | schema.prisma, migrations, ERD_MIGRATION_NOTES.md |
+| schema.prisma | ERD, migrations/*.sql |
+| brand/prompts.md | brand.md, sitemap, PROMPT_TEMPLATES/ |
+| VIBE_RULES.md | CLAUDE.md, AGENTS.md, templates |
+
+**KHÔNG ĐƯỢC** chỉ sửa 1 file khi có files liên quan.
 
 ## 10 Golden Rules
 1. Đọc spec trước khi code
@@ -99,4 +159,4 @@ Paste context packet → Mô tả task → Execute
 
 ---
 
-*Paste toàn bộ vào ChatGPT · 2026-08-06*
+*Paste toàn bộ vào ChatGPT · 2026-08-07*
