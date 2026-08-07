@@ -261,15 +261,15 @@ Chi tiết hơn → `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 
 ### Team Roles
 
-| Role | Người | AI Tool |
-|------|-------|---------|
-| Frontend | - | Cursor |
-| Backend | - | Claude |
-| AI/ML | - | ChatGPT |
-| Design | - | Cursor |
-| PM | - | Cursor |
+| Role | Feature | Người | Stack |
+|------|---------|-------|-------|
+| **SPIN Lead** | Personal Spin + Group Spin | Hoàng Hiếu | React Native + Expo + NativeWind + Reanimated |
+| **AUTH Lead** | Auth + Onboarding | Trường | Supabase Auth + Express + Prisma |
+| **LOCKET + PROFILE Lead** | Locket + Profile | Gia Bình | React Native + Expo + Supabase Storage |
+| **REVIEW + DISCOVER Lead** | Review + Discover + DevOps | Thành Nam | Supabase + GitHub Actions + EAS Build |
+| **PM + B2B Lead** | Project Management + B2B | Tuấn Anh | Architecture + Scope Control |
 
-Chi tiết: `VIBE_RULES.md` và `AGENTS.md` §10
+Chi tiết: `VIBE_RULES.md` §8 và `AGENTS.md` §10
 
 ## 11. Dataset Reference
 

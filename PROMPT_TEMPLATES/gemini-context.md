@@ -84,6 +84,15 @@ Skills trong `.agents/skills/` chỉ hoạt động với Cursor IDE. Các AI to
 - Restaurant.status='approved' mới trong roulette
 - User.publicId immutable
 
+## Feature Owners (5 Roles)
+| Feature | Owner | Stack |
+|---------|-------|-------|
+| SPIN (Personal + Group) | Hoàng Hiếu | React Native + Expo + Reanimated |
+| AUTH + ONBOARDING | Trường | Supabase Auth + Express + Prisma |
+| LOCKET + PROFILE | Gia Bình | React Native + Expo + Supabase Storage |
+| REVIEW + DISCOVER | Thành Nam | Supabase + GitHub Actions + EAS Build |
+| PM + B2B | Tuấn Anh | Architecture + Scope Control |
+
 ## Không Được Làm
 - Thêm feature tự ý
 - Override design tokens
