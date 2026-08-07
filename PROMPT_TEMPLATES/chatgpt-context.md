@@ -1,7 +1,7 @@
 # Prompt Template for ChatGPT
 
 > Copy/paste vào ChatGPT khi bắt đầu session mới
-> **Version:** 1.1 · **Date:** 2026-08-07
+> **Version:** 1.2 · **Date:** 2026-08-07
 
 ---
 
@@ -24,11 +24,32 @@ Mobile app (React Native + Expo) cho người Việt chọn quán ăn ngẫu nhi
 Tagline: "Không biết ăn gì? Để vòng quyết định."
 
 ## Tech Stack
-- Frontend: React Native + Expo + TypeScript + NativeWind
-- Animation: Reanimated 3 + Moti
+- Frontend (Web): React 19 + Vite + TypeScript + Tailwind CSS
+- Frontend (Mobile - Future): React Native + Expo + NativeWind
+- Animation: Reanimated 3 + Moti (mobile)
 - State: Zustand + TanStack Query
-- Backend: Supabase + PostGIS
+- Backend: Express.js + Prisma + MySQL (Docker)
 - Design: Earthy/warm-light-first (nâu-vàng)
+
+## Project Structure
+```
+KADA-Food-Roulette/
+├── Food Roulette-web/     # React + Vite web app
+├── backend/              # Express.js + Prisma + MySQL
+├── brand/               # Design & specs
+├── Content/             # Strategy docs
+├── docs/               # ERD & technical
+├── .agents/skills/     # Agent skills (Cursor)
+└── PROMPT_TEMPLATES/   # Context cho AI tools
+```
+
+## Spec Files (đọc trong repo hoặc paste đoạn liên quan)
+- `brand/prompts.md` — Single source of truth
+- `brand/brand.md` — Design tokens
+- `brand/FOOD-ROULETTE-SITEMAP.md` — Feature specs
+- `VIBE_RULES.md` — Golden rules
+- `AGENTS.md` — Agent conventions
+- `CLAUDE.md` — Entry point
 
 ## Key Specs
 - Auth: Supabase (email + Google)
@@ -63,6 +84,11 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 - brand/prompts.md: https://github.com/.../brand/prompts.md
 - brand/brand.md: Design tokens
 - VIBE_RULES.md: Golden rules
+
+## Skills (Cursor only)
+Skills trong `.agents/skills/` chỉ hoạt động với Cursor IDE. Các AI tools khác tuân thủ rules trực tiếp từ:
+- `VIBE_RULES.md` — 10 golden rules
+- `AGENTS.md` — Agent conventions & permissions
 
 ## Ràng buộc quan trọng
 1. Group.member_ids.length <= 20
@@ -133,4 +159,4 @@ Paste context packet → Mô tả task → Execute
 
 ---
 
-*Paste toàn bộ vào ChatGPT · 2026-08-06*
+*Paste toàn bộ vào ChatGPT · 2026-08-07*
