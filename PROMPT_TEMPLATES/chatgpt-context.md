@@ -1,7 +1,7 @@
 # Prompt Template for ChatGPT
 
 > Copy/paste vào ChatGPT khi bắt đầu session mới
-> **Version:** 1.0 · **Date:** 2026-08-06
+> **Version:** 1.1 · **Date:** 2026-08-07
 
 ---
 
@@ -37,6 +37,27 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 - Locket: Camera-only photo với metadata
 - Menu Capture: AI OCR đọc menu (v1.1)
 - AI Personalization: Suggest best match cho group (v1.1)
+
+## Pricing Model
+
+### B2C - Người dùng app
+- **Free**: 0đ, 5 spins/ngày, 3 locket/tháng, có ad
+- **Pro**: 59.000đ/tháng hoặc 490.000đ/năm (~30% off)
+- **Spin Packs**: Starter (5 spins/15k), Standard (20 spins/59k), Premium (100 spins/199k)
+
+### B2B - Restaurant Partner (Fixed + PPV)
+| Tier | Fixed | PPV | Features |
+|------|-------|-----|----------|
+| Basic | Miễn phí | - | Badge only |
+| Bronze | 99k/tháng | 5k/visit | Badge + Basic analytics |
+| Silver | 199k/tháng | 4k/visit | Top 5 + Promo codes |
+| Gold | 399k/tháng | 3k/visit | Top 3 + Full analytics + Priority |
+
+### Billing Policy
+- **Upgrade**: Prorated, active ngay
+- **Downgrade**: Cuối chu kỳ, không refund
+- **Cancel**: Giữ quyền đến hết chu kỳ đã paid
+- **B2B Guarantee**: 0 đơn = Hoàn tiền 100% nếu 0 visit/30 ngày
 
 ## Spec Files (đọc online):
 - brand/prompts.md: https://github.com/.../brand/prompts.md
