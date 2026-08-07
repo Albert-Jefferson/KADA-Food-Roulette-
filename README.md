@@ -79,6 +79,15 @@ KADA-Food-Roulette/
 ├── apps/
 │   └── mobile/                    # Expo + React Native app
 │       └── app/                  # Expo Router pages
+├── backend/
+│   └── prisma/
+│       ├── schema.prisma         # Prisma schema v5.0
+│       └── migrations/
+│           └── v5.0/            # MySQL migration scripts
+│               ├── 000_create_database.sql
+│               ├── complete_schema.sql
+│               ├── seed_data.sql
+│               └── csv_data/     # CSV import scripts
 ├── brand/                        # Brand & specs
 │   ├── prompts.md               # Master prompt (single source of truth)
 │   ├── brand.md                 # Brand kit
@@ -86,12 +95,78 @@ KADA-Food-Roulette/
 ├── content/                     # Content & exploration
 │   └── explore/                 # Strategy docs
 ├── docs/                        # Documentation
-│   └── food_roulette_erd.drawio.xml # ERD
+│   └── *.xml                    # ERD diagrams (v2.6 - v4.1)
 ├── VIBE_RULES.md               # Vibe coding rules
 ├── AGENTS.md                   # AI agent conventions
 ├── CHANGELOG_SPEC.md           # Spec change log
 └── PROMPT_TEMPLATES/          # AI context templates
 ```
+
+---
+
+## Database Setup (MySQL)
+
+### Yêu cầu
+
+- MySQL 8.0+
+- Docker (recommended) hoặc local MySQL
+
+### Setup với Docker
+
+```bash
+# Pull MySQL image
+docker pull mysql:8.0
+
+# Run container
+docker run -d \
+  --name food_roulette_mysql \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=rootpassword \
+  -e MYSQL_DATABASE=food_roulette \
+  mysql:8.0
+```
+
+### Setup Database
+
+```bash
+# 1. Create database
+mysql -u root -p < backend/prisma/migrations/v5.0/000_create_database.sql
+
+# 2. Create tables
+mysql -u root -p food_roulette < backend/prisma/migrations/v5.0/complete_schema.sql
+
+# 3. Seed test data
+mysql -u root -p food_roulette < backend/prisma/migrations/v5.0/seed_data.sql
+```
+
+### Migrations
+
+| File | Mục đích |
+|------|----------|
+| `000_create_database.sql` | Tạo database + user |
+| `complete_schema.sql` | Tạo tất cả 15 tables |
+| `seed_data.sql` | Seed data cho testing |
+| `csv_data/import_csv.sql` | Import từ CSV (future) |
+
+### Tables (v5.0)
+
+| Table | Entity | Priority |
+|-------|--------|----------|
+| `users` | User accounts | P0 |
+| `restaurants` | Restaurant data | P0 |
+| `restaurant_hours` | Opening hours (4NF) | P0 |
+| `restaurant_photos` | Photos (4NF) | P0 |
+| `friendships` | Social connections | P0 |
+| `spin_groups` | Group spin sessions | P0 |
+| `group_members` | Group members | P0 |
+| `spin_sessions` | Spin results | P0 |
+| `spin_session_candidates` | Restaurant candidates | P0 |
+| `votes` | Group votes | P0 |
+| `spin_wallets` | Spin balance | P0 |
+| `spin_logs` | Spin history | P0 |
+| `lockets` | Food photos | P1 |
+| `check_ins` | Check-in records | P1 |
+| `spin_packs` | Purchased spin packs | P1 |
 
 ---
 

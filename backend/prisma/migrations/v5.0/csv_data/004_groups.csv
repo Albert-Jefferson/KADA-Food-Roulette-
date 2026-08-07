@@ -1,0 +1,4 @@
+id,name,creator_id,invite_code,status,max_members,created_at,updated_at,ended_at
+UUID(),Team Đi Ăn,[creator_user_id],TEAM001,ACTIVE,20,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),Bạn Bè Sài Gòn,[creator_user_id],SGN002,ACTIVE,20,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,
+UUID(),Office Lunch,[creator_user_id],OFF003,COMPLETED,20,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP
