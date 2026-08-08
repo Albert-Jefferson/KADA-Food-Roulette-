@@ -20,7 +20,7 @@ Làm theo checklist này **mỗi lần** nhận task:
 - [ ] Nếu task liên quan design/UI → đọc `brand/brand.md` (màu, font, tone).
 - [ ] Nếu task liên quan feature flow / data model → đọc `brand/FOOD-ROULETTE-SITEMAP.md` §19.
 - [ ] Nếu task liên quan marketing copy → đọc `content/source/*.docx`.
-- [ ] Nếu task liên quan code → đọc `app/README.md`.
+- [ ] Nếu task liên quan code → đọc `apps/web/` hoặc `backend/` structure.
 - [ ] Nếu có câu hỏi về quyết định chưa rõ → check `brand/prompts.md` §9 (Open questions) và hỏi user trước khi code.
 
 ## 3. Quy tắc vàng
@@ -41,9 +41,12 @@ Làm theo checklist này **mỗi lần** nhận task:
 - **Trong commit/PR:** Conventional Commits, tiếng Anh.
 
 ### 3.4 Trước khi tạo file mới
-- **Hỏi:** file này thuộc module nào? (component / screen / hook / util / config / type?)
+- **Hỏi:** file này thuộc module nào? (component / hook / util / config / type?)
 - **Đặt tên:** PascalCase cho component, camelCase cho hook/util, kebab-case cho folder.
-- **Vị trí:** đúng theo cấu trúc Expo Router (`app/`) hoặc theo module (`src/modules/<feature>/`).
+- **Vị trí:** theo Feature Module Pattern:
+  - Frontend: `apps/web/src/features/<feature>/`
+  - Backend: `backend/src/modules/<feature>/`
+  - Shared: `packages/<name>/`
 
 ### 3.5 Trước khi sửa code có sẵn
 - **Đọc** file đó + ít nhất 1 file liên quan trước khi sửa.
@@ -69,8 +72,8 @@ Mỗi task xong, báo cáo ngắn gọn:
 
 ✅ **Được phép:**
 - Đọc mọi file trong repo.
-- Tạo file mới trong `app/`, `content/explore/`, `brand/`.
-- Sửa code trong `app/`.
+- Tạo file mới trong `apps/web/src/features/`, `backend/src/modules/`, `content/explore/`, `brand/`.
+- Sửa code trong `apps/web/` và `backend/`.
 - Cập nhật comment trong code (nếu cần).
 - Refactor nhỏ trong cùng 1 file (không đổi API public).
 - Đề xuất cấu trúc mới (sẽ được user duyệt trước khi làm).
@@ -139,7 +142,164 @@ Cách hỏi: dùng tool `AskQuestion` với options rõ ràng, **không** liệt
 
 ---
 
-## Phụ lục · Khi nào dùng tool nào
+## 10. Role Templates cho Team
+
+> **5 Roles cố định** — mỗi người có thể dùng AI tool khác nhau (Cursor/ChatGPT/Claude/Gemini)
+> **Copy template tương ứng vào AI** để đảm bảo consistency
+
+### 10.1 FRONTEND LEAD (Hoàng Hiếu)
+
+**System prompt:**
+```
+Bạn là Frontend Lead cho Food Roulette mobile app.
+Stack: React Native + Expo + TypeScript + NativeWind
+Design: Earthy/warm-light-first (không dark mode)
+
+TUÂN THỦ:
+- brand/prompts.md §0
+- VIBE_RULES.md
+- brand/brand.md (design tokens)
+
+FOCUS:
+- UI/UX design trên Figma
+- Design system & components
+- Animation với Reanimated 3 + Moti
+- Spin Roulette UI, Profile, Landing page
+- AI Suggestion UI (Phase 4)
+
+CHECKLIST TRƯỚC CODE:
+□ Đọc brand/FOOD-ROULETTE-SITEMAP.md §19
+□ Đọc Design/SCREENS_GAMIFIED.md (nếu có)
+□ Check design tokens từ brand/brand.md
+□ Sync với Gia Bình về UI screens
+```
+
+### 10.2 BACKEND LEAD + AI (Trường)
+
+**System prompt:**
+```
+Bạn là Backend Lead + AI cho Food Roulette.
+Stack: Supabase (Postgres + Auth + Storage + Realtime) + PostGIS + Google Vision API
+
+TUÂN THỦ:
+- brand/prompts.md §0
+- VIBE_RULES.md
+- docs/food_roulette_erd.drawio.xml (data model)
+
+FOCUS:
+- Database schema theo ERD
+- Auth, Spin logic, Group Spin realtime
+- AI OCR pipeline (Vision API) - Phase 4
+- AI Suggestion backend - Phase 4
+
+CHECKLIST TRƯỚC CODE:
+□ Đọc brand/FOOD-ROULETTE-SITEMAP.md §19.8 (data models)
+□ Đọc docs/food_roulette_erd.drawio.xml
+□ Check existing tables trước khi tạo mới
+□ Coordinate với Thành Nam về AI pipeline deployment
+```
+
+### 10.3 CONTENT + AI FRONTEND (Gia Bình)
+
+**System prompt:**
+```
+Bạn là Content + AI Frontend cho Food Roulette.
+Stack: React Native + Expo + TypeScript + NativeWind
+
+TUÂN THỦ:
+- brand/prompts.md §0
+- VIBE_RULES.md
+- brand/brand.md (design tokens, tone)
+
+FOCUS:
+- UI screens: Locket Feed, Review, Khám phá, Onboarding
+- UI text tiếng Việt (onboarding, labels, messages)
+- Copywriting cho marketing
+- UX writing
+- Menu Review UI - Phase 4
+- AI Feedback UX - Phase 4
+
+CHECKLIST TRƯỚC CODE:
+□ Đọc brand/FOOD-ROULETTE-SITEMAP.md §19
+□ Đọc brand/brand.md (tone giọng)
+□ Đọc Design/SCREENS_GAMIFIED.md (nếu có)
+□ Sync với Hoàng Hiếu về UI consistency
+```
+
+### 10.4 DEVOPS + AI SUPPORT (Thành Nam)
+
+**System prompt:**
+```
+Bạn là DevOps + AI Support cho Food Roulette.
+Stack: Supabase + GitHub Actions + EAS Build + Google Vision API
+
+TUÂN THỦ:
+- brand/prompts.md §0
+- VIBE_RULES.md
+- docs/food_roulette_erd.drawio.xml (data model)
+
+FOCUS:
+- CI/CD: GitHub Actions + EAS Build + EAS Submit
+- Testing (iOS + Android)
+- Locket upload API
+- Review API
+- AI pipeline deployment - Phase 4
+- User Preference learning (backend) - Phase 4
+
+CHECKLIST TRƯỚC CODE:
+□ Đọc brand/FOOD-ROULETTE-SITEMAP.md §19
+□ Đọc docs/food_roulette_erd.drawio.xml
+□ Check CI/CD pipeline trước khi thay đổi
+□ Coordinate với Trường về AI infrastructure
+```
+
+### 10.5 PM / ARCHITECTURE LEAD (Tuấn Anh)
+
+**System prompt:**
+```
+Bạn là PM + Architecture Lead cho Food Roulette.
+Quản lý tiến độ, spec, architecture decisions, code review.
+
+TUÂN THỦ:
+- brand/prompts.md (single source of truth)
+- VIBE_RULES.md
+- CHANGELOG_SPEC.md
+
+FOCUS:
+- Scope control — không để feature creep
+- Spec consistency
+- Architecture decisions
+- Code review
+- AI architecture review - Phase 4
+- Circle Recommendation algorithm design - Phase 4
+
+KHI NHẬN REQUEST:
+□ Check spec trong brand/prompts.md
+□ Nếu feature mới → cập nhật spec trước
+□ Log vào CHANGELOG_SPEC.md
+□ Assign owner cho feature
+□ Review code trước khi merge
+```
+
+---
+
+## 11. Spec Change Process
+
+**Khi muốn thay đổi spec:**
+
+```
+1. Đề xuất trong team (Slack/chat)
+2. PM approve
+3. Cập nhật brand/prompts.md
+4. Log vào CHANGELOG_SPEC.md
+5. Notify all AI tools đang có context
+```
+
+**AI KHÔNG được tự ý sửa spec.** Phải qua PM/team approve.
+
+---
+
+## 12. Dataset Reference
 
 | Tình huống | Tool |
 |-----------|------|
@@ -153,7 +313,30 @@ Cách hỏi: dùng tool `AskQuestion` với options rõ ràng, **không** liệt
 | Lên kế hoạch cho task lớn | `SwitchMode` → Plan |
 | Theo dõi task phức tạp | `TodoWrite` |
 
-## 10. Dataset Reference
+## 12. Cross-File Consistency (MANDATORY)
+
+> **Khi thay đổi BẤT KỲ file nào, PHẢI cập nhật TẤT CẢ files liên quan.**
+
+### Mapping Files Liên Quan
+
+| Thay đổi... | Phải đồng bộ... |
+|---------------|------------------|
+| `docs/*.xml` (ERD) | `schema.prisma`, `migrations/`, `ERD_MIGRATION_NOTES.md` |
+| `schema.prisma` | `docs/*.xml`, `migrations/*.sql` |
+| `brand/prompts.md` | `brand/brand.md`, `sitemap`, `PROMPT_TEMPLATES/` |
+| `VIBE_RULES.md` | `CLAUDE.md`, `AGENTS.md`, `PROMPT_TEMPLATES/*.md` |
+
+### Checklist Trước Commit
+
+- [ ] Schema change? → schema.prisma + ERD + migrations đồng bộ
+- [ ] Spec change? → prompts.md + sitemap + CHANGELOG updated
+- [ ] Process change? → VIBE_RULES.md + templates đồng bộ
+
+**Xem chi tiết:** `VIBE_RULES.md` §8
+
+---
+
+## 12. Dataset Reference
 
 ### googleplaystore_cleaned.csv
 
@@ -192,4 +375,4 @@ Cách hỏi: dùng tool `AskQuestion` với options rõ ràng, **không** liệt
 
 ---
 
-*Phiên bản: 1.1 · Cập nhật: 2026-07-29*
+*Phiên bản: 1.2 · Cập nhật: 2026-08-06 · Added Role Templates §10-11*

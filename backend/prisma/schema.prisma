@@ -1,0 +1,489 @@
+// Food Roulette - Prisma Schema v5.0 REVIEWED & OPTIMIZED
+// Generated from: docs/food_roulette_erd_v5.0_reviewed.xml
+// Version: 5.0 | Date: 2026-08-06 | 15 entities
+// BCNF/4NF compliant | Critical Issues Fixed
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// P0 - CORE TABLES (13 tables)
+// ============================================================
+
+// User - Authentication and Profile
+// v5.0: Added phone, isOnboarded, lastActiveAt
+model User {
+  id                  String    @id @default(uuid())
+  email               String    @unique @db.VarChar(255)
+  passwordHash        String    @map("password_hash") @db.VarChar(255)
+  passwordVersion     Int       @default(1) @map("password_version")
+  displayNamePrivate  String    @map("display_name_private") @db.VarChar(50)
+  displayNamePublic   String    @map("display_name_public") @db.VarChar(50)
+  publicId           String    @unique @map("public_id") @db.VarChar(20)
+  avatarUrl          String?   @map("avatar_url") @db.VarChar(500)
+  phone              String?   @map("phone") @db.VarChar(20) // v5.0: SMS auth future
+  role               UserRole  @default(USER)
+  subscriptionTier   SubTier   @default(FREE) @map("subscription_tier")
+  isOnboarded        Boolean   @default(false) @map("is_onboarded") // v5.0: onboarding progress
+  lastActiveAt       DateTime? @map("last_active_at") // v5.0: inactive detection
+  savedRestaurants   Json?     @map("saved_restaurants") // P2: TasteBoard
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  friendshipsRequested  Friendship[] @relation("FriendshipRequester")
+  friendshipsReceived   Friendship[] @relation("FriendshipAddressee")
+  groupMemberships      GroupMember[]
+  spinSessionsInitiated SpinSession[] @relation("SpinInitiator")
+  spinSessionsPersonal   SpinSession[] @relation("SpinPersonal")
+  votes                  Vote[]
+  spinWallet             SpinWallet?
+  lockets                Locket[]
+  checkIns               CheckIn[]
+  photosUploaded         RestaurantPhoto[] @relation("PhotoUploader")
+
+  @@index([subscriptionTier])
+  @@index([deletedAt]) // v5.0: soft delete filter
+  @@index([lastActiveAt]) // v5.0: inactive user queries
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  STEWARD
+  ADMIN
+}
+
+enum SubTier {
+  FREE
+  PREMIUM
+}
+
+// Friendship - Social Foundation
+model Friendship {
+  id           String          @id @default(uuid())
+  requesterId  String         @map("requester_id")
+  addresseeId  String         @map("addressee_id")
+  status       FriendshipStatus @default(PENDING)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  requester User @relation("FriendshipRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee User @relation("FriendshipAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+  @@index([requesterId, status])
+  @@index([addresseeId, status])
+  @@index([status]) // v5.0: Find pending requests
+  @@map("friendships")
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+// Restaurant - Main entity with geo support
+// v5.0: Added googlePlaceId, rating, phone, Decimal lat/lng
+model Restaurant {
+  id              String           @id @default(uuid())
+  name            String           @db.VarChar(255)
+  address         String?          @db.VarChar(500)
+  googlePlaceId   String?          @map("google_place_id") @unique // v5.0: Google Places sync
+  lat             Decimal?         @db.Decimal(10, 8) // v5.0: Fixed precision (was Float)
+  lng             Decimal?         @db.Decimal(11, 8) // v5.0: Fixed precision (was Float)
+  source          RestaurantSource @default(USER_SUBMITTED)
+  category        String?          @db.VarChar(100)
+  priceLevel      Int?            @map("price_level")
+  rating          Float?          @default(0) // v5.0: Display rating
+  phone           String?          @map("phone") @db.VarChar(20) // v5.0: Contact info
+  status          RestaurantStatus @default(PENDING)
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  deletedAt       DateTime?       @map("deleted_at")
+
+  hours             RestaurantHours[]
+  photos            RestaurantPhoto[]
+  lockets           Locket[]
+  checkIns          CheckIn[]
+  spinResults       SpinSession[] @relation("SpinResult")
+  spinCandidates    SpinSessionCandidate[]
+
+  @@index([status])
+  @@index([status, category])
+  @@index([source]) // v5.0: Filter by Google Places vs User Submitted
+  @@index([deletedAt]) // v5.0: Soft delete filter
+  // Note: For geo queries, use application-level Haversine formula
+  // or MySQL 8.0+ spatial indexes with generated POINT column
+  @@map("restaurants")
+}
+
+enum RestaurantSource {
+  GOOGLE_PLACES
+  USER_SUBMITTED
+}
+
+enum RestaurantStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// RestaurantHours - 4NF normalized
+// v5.0: Fixed DateTime -> VARCHAR(5) for MySQL compatibility
+model RestaurantHours {
+  id           String   @id @default(uuid())
+  restaurantId String   @map("restaurant_id")
+  dayOfWeek    Int      @map("day_of_week") // 0=Sunday, 6=Saturday
+  openTime     String?  @db.VarChar(5) // v5.0: Fixed - "HH:MM" format (was DateTime)
+  closeTime    String?  @db.VarChar(5) // v5.0: Fixed - "HH:MM" format (was DateTime)
+  isClosed     Boolean  @default(false) @map("is_closed")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([restaurantId, dayOfWeek])
+  @@index([restaurantId])
+  @@map("restaurant_hours")
+}
+
+// RestaurantPhoto - 4NF normalized
+model RestaurantPhoto {
+  id           String   @id @default(uuid())
+  restaurantId String   @map("restaurant_id")
+  photoUrl     String   @db.VarChar(500)
+  displayOrder Int      @default(0) @map("display_order")
+  caption      String? @db.VarChar(255)
+  uploadedBy   String?  @map("uploaded_by")
+  uploadedAt   DateTime? @map("uploaded_at")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  uploader   User?     @relation("PhotoUploader", fields: [uploadedBy], references: [id], onDelete: SetNull)
+
+  @@unique([restaurantId, photoUrl])
+  @@index([restaurantId, displayOrder])
+  @@map("restaurant_photos")
+}
+
+// Group - For group spin sessions
+model Group {
+  id         String       @id @default(uuid())
+  name       String?      @db.VarChar(100)
+  maxMembers Int          @default(20) @map("max_members")
+  status     GroupStatus  @default(WAITING)
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  deletedAt  DateTime?    @map("deleted_at")
+
+  members      GroupMember[]
+  spinSessions SpinSession[]
+
+  @@index([status]) // v5.0: Active groups
+  @@index([deletedAt]) // v5.0: Soft delete
+  @@map("groups")
+}
+
+enum GroupStatus {
+  WAITING
+  SPINNING
+  VOTING
+  DONE
+  CANCELLED
+}
+
+// GroupMember - Membership with host role
+// v5.0: Added invitedBy field
+model GroupMember {
+  id        String         @id @default(uuid())
+  groupId   String         @map("group_id")
+  userId    String         @map("user_id")
+  invitedBy String?        @map("invited_by") // v5.0: Invitation tracking
+  role      GroupRole      @default(MEMBER)
+  status    MemberStatus   @default(PENDING)
+  joinedAt  DateTime       @default(now()) @map("joined_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@index([groupId, status])
+  @@index([userId]) // v5.0: User's groups lookup
+  @@map("group_members")
+}
+
+enum GroupRole {
+  MEMBER
+  HOST
+}
+
+enum MemberStatus {
+  PENDING
+  ACCEPTED
+  VETO
+}
+
+// SpinSession - Individual or group spin
+// v5.0: Added categoryFilter, status index, createdAt index
+model SpinSession {
+  id             String      @id @default(uuid())
+  groupId        String?     @map("group_id")
+  userId         String?     @map("user_id")
+  initiatorId    String      @map("initiator_id")
+  categoryFilter String?     @map("category_filter") @db.VarChar(100) // v5.0: Filter restaurants
+  resultId       String?     @map("result_id")
+  status         SpinStatus  @default(ACTIVE)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  completedAt    DateTime?   @map("completed_at")
+
+  group      Group?      @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  user       User?       @relation("SpinPersonal", fields: [userId], references: [id], onDelete: SetNull)
+  initiator  User        @relation("SpinInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
+  result     Restaurant? @relation("SpinResult", fields: [resultId], references: [id], onDelete: SetNull)
+  votes      Vote[]
+  candidates SpinSessionCandidate[] // v5.0: Junction table
+
+  @@index([groupId])
+  @@index([userId])
+  @@index([initiatorId])
+  @@index([status]) // v5.0: Active sessions
+  @@index([createdAt]) // v5.0: Time-based queries
+  @@map("spin_sessions")
+}
+
+// SpinSessionCandidate - v5.0 NEW: Junction table replaces candidateIds JSON
+model SpinSessionCandidate {
+  id            String   @id @default(uuid())
+  spinSessionId String   @map("spin_session_id")
+  restaurantId  String   @map("restaurant_id")
+  displayOrder Int      @default(0) @map("display_order")
+  isSelected    Boolean  @default(false) @map("is_selected") // Winner flag
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  spinSession SpinSession @relation(fields: [spinSessionId], references: [id], onDelete: Cascade)
+  restaurant  Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([spinSessionId, restaurantId])
+  @@index([spinSessionId])
+  @@index([restaurantId])
+  @@map("spin_session_candidates")
+}
+
+enum SpinStatus {
+  ACTIVE
+  VOTING
+  COMPLETED
+  CANCELLED
+}
+
+// Vote - Group voting on spin result
+// v5.0: Added [spinSessionId, value] index for vote tally
+model Vote {
+  id            String     @id @default(uuid())
+  spinSessionId String     @map("spin_session_id")
+  userId        String     @map("user_id")
+  value         VoteValue
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  spinSession SpinSession @relation(fields: [spinSessionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([spinSessionId, userId])
+  @@index([spinSessionId, value]) // v5.0: Vote tally optimization
+  @@map("votes")
+}
+
+enum VoteValue {
+  ACCEPT
+  VETO
+}
+
+// SpinWallet - User's spin balance (1:1 with User)
+// v5.0: Fixed Int -> BigInt for overflow, added version for optimistic locking
+model SpinWallet {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  balance   BigInt  @default(0) // v5.0: Fixed - BigInt for overflow (was Int)
+  version   Int      @default(0) @map("version") // v5.0: Optimistic locking
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs SpinLog[]
+
+  // DB TRIGGER: balance >= 0 (see docs/DB_SCHEMA_REVIEW_v5.0.md)
+  @@map("spin_wallets")
+}
+
+// SpinLog - Transaction history
+// v5.0: Fixed Int -> BigInt for amount
+model SpinLog {
+  id           String      @id @default(uuid())
+  walletId     String      @map("wallet_id")
+  amount       BigInt      // v5.0: Fixed - BigInt for overflow (was Int)
+  source       SpinSource
+  purchaseId   String?     @map("purchase_id")
+  adWatchLogId String?    @map("ad_watch_log_id")
+  giftId       String?    @map("gift_id")
+  referralId   String?    @map("referral_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  wallet   SpinWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  purchase SpinPack?  @relation(fields: [purchaseId], references: [id], onDelete: SetNull)
+
+  @@index([walletId, createdAt])
+  @@index([purchaseId])
+  @@map("spin_logs")
+}
+
+enum SpinSource {
+  PURCHASE
+  AD_WATCH
+  REFERRAL
+  REWARD
+}
+
+// SpinPack - Revenue model
+model SpinPack {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(100)
+  spins     Int
+  priceVND  Int      @map("price_vnd")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  purchases SpinLog[]
+
+  @@index([isActive])
+  @@map("spin_packs")
+}
+
+// ============================================================
+// P1 - IMPORTANT TABLES (2 tables)
+// ============================================================
+
+// Locket - Camera-only photo capture
+// v5.0: Added exifStripped, Decimal lat/lng, visibility index
+model Locket {
+  id           String           @id @default(uuid())
+  userId       String           @map("user_id")
+  restaurantId String?          @map("restaurant_id")
+  imageUrl     String           @map("image_url") @db.VarChar(500)
+  deviceHash   String           @map("device_hash") @db.VarChar(64)
+  capturedAt   DateTime         @map("captured_at")
+  exifStripped Boolean          @default(false) @map("exif_stripped") // v5.0: Audit trail
+  lat          Decimal?         @db.Decimal(10, 8) // v5.0: Fixed precision (was Float)
+  lng          Decimal?         @db.Decimal(11, 8) // v5.0: Fixed precision (was Float)
+  visibility   LocketVisibility @default(FRIENDS)
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: SetNull)
+  checkIns   CheckIn[]
+
+  @@index([userId, capturedAt])
+  @@index([visibility, capturedAt]) // v5.0: Feed queries
+  @@index([restaurantId]) // v5.0: Restaurant lockets
+  // DB TRIGGER: capturedAt within 60s (see docs/DB_SCHEMA_REVIEW_v5.0.md)
+  @@map("lockets")
+}
+
+enum LocketVisibility {
+  PRIVATE
+  FRIENDS
+  PUBLIC
+}
+
+// CheckIn - Location verification
+// v5.0: Added verificationMethod, accuracy, fixed index
+model CheckIn {
+  id                 String          @id @default(uuid())
+  userId             String          @map("user_id")
+  restaurantId       String          @map("restaurant_id")
+  locketId           String?         @map("locket_id")
+  verificationMethod CheckInMethod   @default(GPS) @map("verification_method") // v5.0
+  accuracy           Float?         @map("accuracy") // v5.0: GPS accuracy in meters
+  status             CheckInStatus   @default(ACTIVE)
+  createdAt          DateTime        @default(now()) @map("created_at")
+  expiresAt          DateTime        @map("expires_at")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  locket     Locket?   @relation(fields: [locketId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status, expiresAt]) // v5.0: Fixed - Critical query index
+  @@index([restaurantId, createdAt]) // v5.0: Restaurant check-ins
+  @@map("check_ins")
+}
+
+enum CheckInStatus {
+  ACTIVE
+  EXPIRED
+  VERIFIED
+}
+
+enum CheckInMethod {
+  GPS
+  QR_CODE
+  LOCKET
+}
+
+// ============================================================
+// P2 - DEFERRED TABLES (not implemented in v5.0)
+// ============================================================
+// The following will be added in v1.2+:
+// - TasteBoard / TasteBoardItem (replaces User.savedRestaurants)
+// - Menu / MenuItem (AI OCR - Google Vision API)
+// - UserPreference (AI learning)
+// - CircleRecommendation (v2.0 AI feature)
+// - B2B: RestaurantPartner, CorporateAccount, CorporateMember
+// - RestaurantVisit
+// - Review
+// - Commitment
+// - AdWatchLog (referenced in SpinLog)
+
+// ============================================================
+// IMPLEMENTATION NOTES
+// ============================================================
+// See docs/DB_SCHEMA_REVIEW_v5.0.md for complete implementation details
+//
+// 1. MySQL Triggers Required:
+//    - SpinWallet: balance >= 0 (BEFORE UPDATE/INSERT)
+//    - GroupMember: count <= 20 (BEFORE INSERT)
+//    - Locket: capturedAt within 60s (BEFORE INSERT)
+//    - CheckIn: auto-expiration EVENT (SCHEDULED)
+//
+// 2. Missing Indexes Summary:
+//    - CheckIn: [userId, status, expiresAt] - CRITICAL
+//    - Locket: [visibility, capturedAt] - CRITICAL
+//    - Vote: [spinSessionId, value] - IMPORTANT
+//    - Friendship: [status] - IMPORTANT
+//
+// 3. Data Type Fixes:
+//    - RestaurantHours.openTime/closeTime: VARCHAR(5) not DateTime
+//    - SpinWallet.balance: BigInt not Int
+//    - SpinLog.amount: BigInt not Int
+//    - Restaurant.lat/lng: Decimal(10,8)/Decimal(11,8) not Float
+//    - Locket.lat/lng: Decimal(10,8)/Decimal(11,8) not Float
+//
+// 4. New Fields Added:
+//    - User: phone, isOnboarded, lastActiveAt
+//    - Restaurant: googlePlaceId, rating, phone
+//    - GroupMember: invitedBy
+//    - SpinSession: categoryFilter
+//    - SpinWallet: version
+//    - Locket: exifStripped
+//    - CheckIn: verificationMethod, accuracy
+//    - SpinSessionCandidate: NEW TABLE (replaces candidateIds JSON)
+//
+// 5. Soft Deletes:
+//    - User.deletedAt
+//    - Restaurant.deletedAt
+//    - Group.deletedAt

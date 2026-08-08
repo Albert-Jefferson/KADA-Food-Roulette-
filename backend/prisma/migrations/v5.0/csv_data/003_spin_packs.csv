@@ -1,0 +1,7 @@
+id,name,description,spins_count,price_usd,is_active,created_at
+UUID(),Free Daily,Daily free spins - no purchase required,3,0.00,TRUE,CURRENT_TIMESTAMP
+UUID(),Starter Pack,10 spins to get you started,10,0.99,TRUE,CURRENT_TIMESTAMP
+UUID(),Basic Pack,25 spins for casual players,25,1.99,TRUE,CURRENT_TIMESTAMP
+UUID(),Party Pack,50 spins for group gatherings,50,3.49,TRUE,CURRENT_TIMESTAMP
+UUID(),Premium Pack,100 spins for spin enthusiasts,100,5.99,TRUE,CURRENT_TIMESTAMP
+UUID(),Unlimited Monthly,Unlimited spins for 30 days,-1,9.99,TRUE,CURRENT_TIMESTAMP

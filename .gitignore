@@ -1,3 +1,4 @@
+ cái-này-bị-rối-nè
 # Logs
 logs
 *.log
@@ -22,3 +23,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+node_modules/
+.vite/
+dist/
+main

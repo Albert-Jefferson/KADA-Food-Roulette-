@@ -1,0 +1,111 @@
+# Cursor IDE Auto-Load Rules
+
+> Auto-load khi mở project trong Cursor
+> **Version:** 1.0 · **Date:** 2026-08-06
+
+---
+
+## Auto-Load Files
+
+Cursor tự động đọc các files sau khi mở project:
+
+1. **CLAUDE.md** — Entry point, project overview
+2. **AGENTS.md** — Agent conventions & role templates
+3. **VIBE_RULES.md** — Golden rules cho vibe coding
+4. **.cursorrules** — File này
+
+---
+
+## Default Behaviors
+
+### Always Follow These Rules
+
+```
+1. Đọc CLAUDE.md trước khi làm bất kỳ điều gì
+2. Tuân thủ VIBE_RULES.md 10 golden rules
+3. Check AGENTS.md §10 cho role-specific rules
+4. Không tự ý thêm tính năng — hỏi PM trước
+5. Khi không chắc — hỏi, không đoán
+```
+
+### File Naming Conventions
+
+| Type | Convention | Example |
+|------|-----------|---------|
+| Components | PascalCase | `SpinWheel.tsx` |
+| Hooks/Utils | camelCase | `useSpin.ts` |
+| Folders | kebab-case | `spin-system/` |
+| Docs | kebab-case.md | `spin-system-v2.md` |
+| Config | camelCase | `tailwind.config.js` |
+
+### Tech Stack (Do Not Override)
+
+```
+Frontend: React Native + Expo + TypeScript + NativeWind
+Animation: Reanimated 3 + Moti
+State: Zustand + TanStack Query
+Backend: Supabase (Postgres + Auth + Storage + Realtime)
+DB Extension: PostGIS
+Design: Earthy/warm-light-first
+```
+
+---
+
+## Project Structure
+
+```
+KADA-Food-Roulette/
+├── Food Roulette-web/              # React + Vite web app
+│   └── src/
+│       ├── features/              # Feature-based modules
+│       ├── components/           # Shared components
+│       └── ...
+├── backend/                       # Express.js + Prisma
+│   ├── prisma/                   # Database schema & migrations
+│   └── src/                      # Backend source
+├── brand/                         # Design & brand docs
+│   ├── prompts.md               # Single source of truth
+│   ├── brand.md                 # Design tokens
+│   └── FOOD-ROULETTE-SITEMAP.md # Feature specs
+├── Content/                       # Strategy & exploration docs
+│   └── explore/                  # Strategy docs
+├── docs/                          # ERD & technical docs
+├── .agents/skills/               # Agent skills (Cursor)
+├── VIBE_RULES.md                 # Golden rules
+├── CLAUDE.md                      # Entry point
+└── AGENTS.md                     # Agent conventions
+```
+
+---
+
+## Allowed Commands
+
+| Command | When OK |
+|---------|---------|
+| Read, Glob, Grep | Always |
+| Shell (npm install, build, lint) | Always |
+| Write, StrReplace | In allowed folders only |
+| Delete | Only if explicitly asked |
+
+## Blocked Commands
+
+| Command | Why Blocked |
+|---------|-------------|
+| git push | Must be approved |
+| rm -rf | Destructive |
+| npm publish | Deployment must be approved |
+
+---
+
+## Onboarding Flow for New AI Session
+
+```
+1. AI reads CLAUDE.md
+2. AI reads VIBE_RULES.md §1-2 (golden rules)
+3. AI reads relevant AGENTS.md §10 (role template)
+4. AI is ready to assist
+```
+
+---
+
+*Auto-generated · 2026-08-06*
