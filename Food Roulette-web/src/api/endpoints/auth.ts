@@ -40,7 +40,7 @@ export interface UserProfile {
   streakDays: number;
   coins: number;
   role: 'USER' | 'STEWARD' | 'ADMIN';
-  createdAt: string;
+  createdAt?: string;
 }
 
 export const authApi = {
@@ -61,6 +61,28 @@ export const authApi = {
 
   google: async (idToken: string): Promise<AuthResponse> => {
     const response = await apiClient.post<AuthResponse>('/auth/google', { idToken });
+    return response.data;
+  },
+
+  onboarding: async (data: {
+    displayNamePrivate?: string;
+    displayNamePublic?: string;
+    priceRange?: number;
+    dietaryRestrictions?: string[];
+    spiceTolerance?: string;
+    cuisinePreferences?: string[];
+  }) => {
+    const response = await apiClient.post('/auth/onboarding', data);
+    return response.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const response = await apiClient.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (resetToken: string, newPassword: string) => {
+    const response = await apiClient.post('/auth/reset-password', { resetToken, newPassword });
     return response.data;
   },
 };
