@@ -112,6 +112,21 @@
 
 ### 2026-08-08
 
+### Resolved
+
+- **Steward Role Design Decision**
+  - By: AI Assistant (via Cursor)
+  - Via: User decision
+  - Decision: Dùng `role ENUM('USER', 'STEWARD', 'ADMIN')` trên bảng User (thay vì `is_steward boolean` hoặc bảng riêng)
+  - Files affected:
+    - `brand/prompts.md` §9 (resolved open question)
+    - `brand/prompts.md` §7 (User interface)
+    - `brand/FOOD-ROULETTE-SITEMAP.md` §19.10 (resolved open question)
+    - `brand/FOOD-ROULETTE-SITEMAP.md` §19 (User interface)
+  - Rationale: Đơn giản, đã implement trong code, đủ dùng cho MVP
+
+### 2026-08-08
+
 ### Added
 
 - **Express.js + Prisma Backend Setup**

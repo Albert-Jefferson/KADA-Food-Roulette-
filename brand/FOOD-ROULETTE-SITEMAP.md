@@ -771,7 +771,7 @@ interface User {
   public_id: string;                // ngẫu nhiên, dùng cho /u/:public_id
   avatar_url?: string;
   bio?: string;
-  is_steward: boolean;              // role duyệt quán
+  role: 'USER' | 'STEWARD' | 'ADMIN';  // role duyệt quán
   created_at: Date;
   preferences: {
     cuisines: string[];
@@ -1033,7 +1033,7 @@ interface CircleRecommendation {
 
 ### 19.10 Open questions còn lại (để thống nhất sau)
 
-- [ ] Steward role: có phải là `is_steward = true` trên `User`, hay một bảng `steward_team` riêng?
+- [x] Steward role: ✅ Dùng `role ENUM('USER', 'STEWARD', 'ADMIN')` trên bảng User
 - [ ] Bạn bè có thể mời vào group, hay chỉ owner mới thêm?
 - [ ] Group spin lưu vĩnh viễn hay có thể "giải tán" nhóm sau khi quay?
 - [ ] Ảnh locket có tự hủy (24h) hay giữ vĩnh viễn?

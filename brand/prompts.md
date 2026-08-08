@@ -117,7 +117,7 @@ interface User {
   public_id: string;                // immutable, dùng cho URL
   avatar_url?: string;
   bio?: string;
-  is_steward: boolean;
+  role: 'USER' | 'STEWARD' | 'ADMIN';  // role duyệt quán
   created_at: Date;
   preferences: { cuisines: string[]; price_range: 1|2|3|4; dietary: string[] };
 }
@@ -582,7 +582,7 @@ Xưng "mình – bạn"                          Xưng "quý khách"
 
 ## §9 · Open questions còn lại (cần user quyết định)
 
-- [ ] **Steward role:** `is_steward` boolean trên `User`, hay bảng `steward_team` riêng?
+- [x] **Steward role:** ✅ Dùng `role ENUM('USER', 'STEWARD', 'ADMIN')` trên bảng User
 - [ ] **Mời vào group:** bạn bè có thể mời, hay chỉ owner mới thêm thành viên?
 - [ ] **Vòng đời group:** tồn tại vĩnh viễn, hay có thể "giải tán" sau khi quay?
 - [ ] **Vòng đời ảnh locket:** tự hủy 24h, hay giữ vĩnh viễn?
