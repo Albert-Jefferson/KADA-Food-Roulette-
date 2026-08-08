@@ -63,23 +63,54 @@ Tagline: "Không biết ăn gì? Để vòng quyết định."
 
 ## Role-Specific Prompts
 
-### Frontend Developer
+### 1. SPIN LEAD (Hoàng Hiếu)
 
 ```
-Focus: UI screens, animation, state management
+Focus: Personal Spin + Group Spin UI, bánh xe animation
+Stack: React Native + Expo + NativeWind + Reanimated 3
 Files to read:
-- brand/FOOD-ROULETTE-SITEMAP.md §19
+- brand/FOOD-ROULETTE-SITEMAP.md §19 (Spin + Group Spin)
 - brand/brand.md (design tokens)
-- Design/SCREENS_GAMIFIED.md
 ```
 
-### Backend Developer
+### 2. AUTH + ONBOARDING LEAD (Trường)
 
 ```
-Focus: Supabase, API, database
+Focus: Auth, JWT, Onboarding flow
+Stack: Supabase Auth + Express.js + Prisma + JWT
 Files to read:
-- docs/food_roulette_erd.drawio.xml
-- brand/FOOD-ROULETTE-SITEMAP.md §19.8
+- docs/food_roulette_erd.drawio.xml (User table)
+- brand/FOOD-ROULETTE-SITEMAP.md §19 (Auth + Onboarding)
+```
+
+### 3. LOCKET + PROFILE LEAD (Gia Bình)
+
+```
+Focus: Locket camera capture, Profile, Friends
+Stack: React Native + Expo + NativeWind + Supabase Storage
+Files to read:
+- brand/FOOD-ROULETTE-SITEMAP.md §19 (Locket + Profile)
+- brand/brand.md (design tokens, tone tiếng Việt)
+```
+
+### 4. REVIEW + DISCOVER LEAD (Thành Nam)
+
+```
+Focus: Review, Map, Steward dashboard, CI/CD
+Stack: Supabase + GitHub Actions + EAS Build
+Files to read:
+- docs/food_roulette_erd.drawio.xml (Restaurant, Review tables)
+- brand/FOOD-ROULETTE-SITEMAP.md §19 (Review + Discover)
+```
+
+### 5. PM + B2B LEAD (Tuấn Anh)
+
+```
+Focus: Scope control, Spec, B2B, Code review
+Files to read:
+- brand/prompts.md (single source of truth)
+- CHANGELOG_SPEC.md
+- brand/FOOD-ROULETTE-SITEMAP.md §19 (B2B)
 ```
 
 ---

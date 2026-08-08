@@ -97,6 +97,15 @@ Skills trong `.agents/skills/` chỉ hoạt động với Cursor IDE. Các AI to
 4. Restaurant only in roulette khi status='approved'
 5. Không tự thêm tính năng
 
+## Feature Owners (5 Roles)
+| Feature | Owner | Stack |
+|---------|-------|-------|
+| SPIN (Personal + Group) | Hoàng Hiếu | React Native + Expo + Reanimated |
+| AUTH + ONBOARDING | Trường | Supabase Auth + Express + Prisma |
+| LOCKET + PROFILE | Gia Bình | React Native + Expo + Supabase Storage |
+| REVIEW + DISCOVER | Thành Nam | Supabase + GitHub Actions + EAS Build |
+| PM + B2B | Tuấn Anh | Architecture + Scope Control |
+
 ## Cross-File Consistency (CRITICAL)
 
 > **Khi thay đổi file nào, PHẢI cập nhật TẤT CẢ files liên quan.**
