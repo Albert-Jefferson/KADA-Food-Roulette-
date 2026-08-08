@@ -47,6 +47,8 @@ model User {
   lockets                Locket[]
   checkIns               CheckIn[]
   photosUploaded         RestaurantPhoto[] @relation("PhotoUploader")
+  menusCaptured          Menu[]           @relation("MenuCapturer")
+  preference             UserPreference?
 
   @@index([subscriptionTier])
   @@index([deletedAt]) // v5.0: soft delete filter
@@ -115,6 +117,7 @@ model Restaurant {
   checkIns          CheckIn[]
   spinResults       SpinSession[] @relation("SpinResult")
   spinCandidates    SpinSessionCandidate[]
+  menus             Menu[]
 
   @@index([status])
   @@index([status, category])
@@ -181,8 +184,9 @@ model Group {
   updatedAt  DateTime     @updatedAt @map("updated_at")
   deletedAt  DateTime?    @map("deleted_at")
 
-  members      GroupMember[]
-  spinSessions SpinSession[]
+  members         GroupMember[]
+  spinSessions    SpinSession[]
+  recommendations CircleRecommendation[]
 
   @@index([status]) // v5.0: Active groups
   @@index([deletedAt]) // v5.0: Soft delete
@@ -246,8 +250,9 @@ model SpinSession {
   user       User?       @relation("SpinPersonal", fields: [userId], references: [id], onDelete: SetNull)
   initiator  User        @relation("SpinInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
   result     Restaurant? @relation("SpinResult", fields: [resultId], references: [id], onDelete: SetNull)
-  votes      Vote[]
-  candidates SpinSessionCandidate[] // v5.0: Junction table
+  votes          Vote[]
+  candidates     SpinSessionCandidate[] // v5.0: Junction table
+  recommendation CircleRecommendation?
 
   @@index([groupId])
   @@index([userId])
@@ -436,13 +441,91 @@ enum CheckInMethod {
 }
 
 // ============================================================
-// P2 - DEFERRED TABLES (not implemented in v5.0)
+// P2 - MENU CAPTURE & AI PERSONALIZATION (v1.1)
 // ============================================================
-// The following will be added in v1.2+:
+
+// Menu - Captured menu image + OCR result
+model Menu {
+  id            String     @id @default(uuid())
+  restaurantId  String     @map("restaurant_id")
+  imageUrl      String     @map("image_url") @db.VarChar(500)
+  extractedText String?    @map("extracted_text") @db.Text
+  confidence    Float?     @default(0)
+  capturedBy    String     @map("captured_by")
+  capturedAt    DateTime   @default(now()) @map("captured_at")
+  status        MenuStatus @default(PENDING)
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  capturer   User       @relation("MenuCapturer", fields: [capturedBy], references: [id], onDelete: Cascade)
+  items      MenuItem[]
+
+  @@index([restaurantId, status])
+  @@index([capturedBy])
+  @@map("menus")
+}
+
+enum MenuStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+// MenuItem - Individual dish parsed from menu
+model MenuItem {
+  id        String  @id @default(uuid())
+  menuId    String  @map("menu_id")
+  name      String  @db.VarChar(200)
+  priceVND  Int?    @map("price_vnd")
+  category  String? @db.VarChar(50)
+  tags      Json    @default("[]")
+  sortOrder Int     @default(0) @map("sort_order")
+
+  menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@index([menuId])
+  @@map("menu_items")
+}
+
+// UserPreference - AI-learned taste profile (1:1 with User)
+model UserPreference {
+  id                  String   @id @default(uuid())
+  userId              String   @unique @map("user_id")
+  cuisineScores       Json     @default("{}") @map("cuisine_scores")
+  priceRange          Int      @default(2) @map("price_range")
+  dietaryRestrictions Json     @default("[]") @map("dietary_restrictions")
+  spiceTolerance      String   @default("medium") @map("spice_tolerance") @db.VarChar(10)
+  dislikedIngredients Json     @default("[]") @map("disliked_ingredients")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+// CircleRecommendation - AI match results for group spin
+model CircleRecommendation {
+  id            String   @id @default(uuid())
+  groupId       String   @map("group_id")
+  spinSessionId String?  @unique @map("spin_session_id")
+  menuId        String?  @map("menu_id")
+  memberScores  Json     @map("member_scores")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  group       Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  spinSession SpinSession? @relation(fields: [spinSessionId], references: [id], onDelete: SetNull)
+
+  @@index([groupId])
+  @@map("circle_recommendations")
+}
+
+// ============================================================
+// P2 - DEFERRED TABLES (not implemented yet)
+// ============================================================
+// The following will be added in future versions:
 // - TasteBoard / TasteBoardItem (replaces User.savedRestaurants)
-// - Menu / MenuItem (AI OCR - Google Vision API)
-// - UserPreference (AI learning)
-// - CircleRecommendation (v2.0 AI feature)
 // - B2B: RestaurantPartner, CorporateAccount, CorporateMember
 // - RestaurantVisit
 // - Review
