@@ -1,8 +1,37 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CircleAiSuggestionCard from './CircleAiSuggestionCard';
 
 const GroupVoteResult: React.FC = () => {
   const navigate = useNavigate();
+
+  // Mock data for AI Circle Suggestions in group spin result
+  const mockMemberScores = [
+    {
+      userId: 'user-1',
+      userName: 'Minh',
+      topItem: { name: 'Bún bò đặc biệt Bà Luân', priceVND: 65000, category: 'món chính', tags: ['cay'] },
+      matchScore: 0.92,
+      reasons: ['Bạn thích món bún bò ✓', 'Trong budget của bạn ✓', 'Bạn thích món cay 🔥'],
+      alternativeItems: [{ name: 'Bún bò gân' }, { name: 'Bún bò giò heo' }],
+    },
+    {
+      userId: 'user-2',
+      userName: 'Lan',
+      topItem: { name: 'Bún bò nạm chả', priceVND: 55000, category: 'món chính', tags: [] },
+      matchScore: 0.85,
+      reasons: ['Lan thích bún nước ✓', 'Vừa phải không quá cay ✓'],
+      alternativeItems: [{ name: 'Bún bò tái' }],
+    },
+    {
+      userId: 'user-3',
+      userName: 'Tuấn',
+      topItem: { name: 'Bún bò bắp hoa', priceVND: 60000, category: 'món chính', tags: [] },
+      matchScore: 0.78,
+      reasons: ['Phù hợp khẩu vị đạm cao ✓'],
+      alternativeItems: [{ name: 'Bún bò gân nạm' }],
+    },
+  ];
 
   useEffect(() => {
     const container = document.getElementById('confetti-container');
@@ -113,6 +142,11 @@ const GroupVoteResult: React.FC = () => {
               3/4 thành viên đã đồng ý
             </p>
           </div>
+        </div>
+
+        {/* AI Suggestion Section */}
+        <div className="w-full mb-stack-md">
+          <CircleAiSuggestionCard memberScores={mockMemberScores} />
         </div>
 
         {/* Action Buttons */}

@@ -1,28 +1,47 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
-import HomeSpinRewards from './pages/HomeSpinRewards';
-import LocketFeed from './pages/LocketFeed';
-import ProfileTasteProfile from './pages/ProfileTasteProfile';
-import LuckySpinWheel from './pages/LuckySpinWheel';
-import SpinResult from './pages/SpinResult';
-import MysteryBoxReveal from './pages/MysteryBoxReveal';
-import CheckInVerification from './pages/CheckInVerification';
-import CheckInCompleteRewards from './pages/CheckInCompleteRewards';
-import WriteReview from './pages/WriteReview';
-import ReviewSubmitted from './pages/ReviewSubmitted';
-import GroupSpinWhoSpins from './pages/GroupSpinWhoSpins';
-import GroupVoteVeto from './pages/GroupVoteVeto';
-import GroupVoteResult from './pages/GroupVoteResult';
-import GroupCheckInVerification from './pages/GroupCheckInVerification';
-import GroupCheckInCompleteRewards from './pages/GroupCheckInCompleteRewards';
-import SeasonGarden from './pages/SeasonGarden';
-import EnhancedSeasonGardenProgress from './pages/EnhancedSeasonGardenProgress';
-import StreakDashboard from './pages/StreakDashboard';
-import FriendsLeaderboardDetail from './pages/FriendsLeaderboardDetail';
-import NearbyRestaurantsLeaderboard from './pages/NearbyRestaurantsLeaderboard';
-import NearbyRestaurantsMapView from './pages/NearbyRestaurantsMapView';
-import KhCCommitment from './pages/KhCCommitment';
-import ShareYourHarvestSuccess from './pages/ShareYourHarvestSuccess';
+
+// Features - Roulette
+import HomeSpinRewards from './features/roulette/components/HomeSpinRewards';
+import LuckySpinWheel from './features/roulette/components/LuckySpinWheel';
+import SpinResult from './features/roulette/components/SpinResult';
+import MysteryBoxReveal from './features/roulette/components/MysteryBoxReveal';
+
+// Features - Lockets
+import LocketFeed from './features/lockets/components/LocketFeed';
+import ShareYourHarvestSuccess from './features/lockets/components/ShareYourHarvestSuccess';
+
+// Features - Profile
+import ProfileTasteProfile from './features/profile/components/ProfileTasteProfile';
+import StreakDashboard from './features/profile/components/StreakDashboard';
+
+// Features - Checkin
+import CheckInVerification from './features/checkin/components/CheckInVerification';
+import CheckInCompleteRewards from './features/checkin/components/CheckInCompleteRewards';
+import WriteReview from './features/checkin/components/WriteReview';
+import ReviewSubmitted from './features/checkin/components/ReviewSubmitted';
+
+// Features - Groups
+import GroupSpinWhoSpins from './features/groups/components/GroupSpinWhoSpins';
+import GroupVoteVeto from './features/groups/components/GroupVoteVeto';
+import GroupVoteResult from './features/groups/components/GroupVoteResult';
+import GroupCheckInVerification from './features/groups/components/GroupCheckInVerification';
+import GroupCheckInCompleteRewards from './features/groups/components/GroupCheckInCompleteRewards';
+
+// Features - Rewards
+import SeasonGarden from './features/rewards/components/SeasonGarden';
+import EnhancedSeasonGardenProgress from './features/rewards/components/EnhancedSeasonGardenProgress';
+
+// Features - Restaurants
+import FriendsLeaderboardDetail from './features/restaurants/components/FriendsLeaderboardDetail';
+import NearbyRestaurantsLeaderboard from './features/restaurants/components/NearbyRestaurantsLeaderboard';
+import NearbyRestaurantsMapView from './features/restaurants/components/NearbyRestaurantsMapView';
+import KhCCommitment from './features/restaurants/components/KhCCommitment';
+
+// Features - Menu & AI
+import MenuCaptureScreen from './features/menu/components/MenuCaptureScreen';
+import MenuReviewScreen from './features/menu/components/MenuReviewScreen';
+import PreferencesScreen from './features/profile/components/PreferencesScreen';
 
 function App() {
   return (
@@ -32,8 +51,11 @@ function App() {
           <Route path="/" element={<HomeSpinRewards />} />
           <Route path="/locket" element={<LocketFeed />} />
           <Route path="/profile" element={<ProfileTasteProfile />} />
+          <Route path="/preferences" element={<PreferencesScreen />} />
           <Route path="/spin" element={<LuckySpinWheel />} />
           <Route path="/spin/result" element={<SpinResult />} />
+          <Route path="/spin/menu-capture" element={<MenuCaptureScreen />} />
+          <Route path="/spin/menu-review" element={<MenuReviewScreen />} />
           <Route path="/mystery-box" element={<MysteryBoxReveal />} />
           <Route path="/check-in" element={<CheckInVerification />} />
           <Route path="/check-in/rewards" element={<CheckInCompleteRewards />} />
