@@ -1,10 +1,10 @@
 import 'dotenv/config'
-import express, { Express, Request, Response, NextFunction } from 'express'
+import express, { Express, Request, Response } from 'express'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import { corsMiddleware } from './middleware/cors.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
-import authRoutes from './routes/auth.js'
+import authRoutes from './modules/auth/auth.routes.js'
 
 const app: Express = express()
 const PORT = process.env.PORT || 3000
