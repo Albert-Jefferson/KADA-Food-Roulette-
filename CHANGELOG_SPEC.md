@@ -50,9 +50,60 @@
 
 ## Changelog
 
-### 2026-08-06
+### 2026-08-08
 
 ### Added
+
+- **Express.js + Prisma Backend Setup**
+  - By: AI Assistant
+  - Via: Cursor
+  - Spec: `AGENTS.md` §10.2 (Backend Lead - Trường)
+  - Files affected:
+    - `backend/package.json` (added: express, cors, helmet, morgan, bcryptjs, jsonwebtoken, etc.)
+    - `backend/tsconfig.json` (new - TypeScript configuration)
+    - `backend/.env.example` (new - environment variables template)
+    - `backend/.env` (updated - added JWT and server config)
+    - `backend/src/index.ts` (new - Express entry point)
+    - `backend/src/lib/prisma.ts` (new - Prisma client singleton)
+    - `backend/src/types/index.ts` (new - shared types)
+    - `backend/src/middleware/cors.ts` (new)
+    - `backend/src/middleware/errorHandler.ts` (new)
+    - `backend/src/middleware/validate.ts` (new)
+    - `backend/src/middleware/auth.ts` (new - JWT authentication)
+    - `backend/src/routes/auth.ts` (new - auth endpoints)
+    - `backend/src/routes/index.ts` (new)
+    - `backend/src/utils/jwt.ts` (new)
+    - `backend/src/utils/hash.ts` (new)
+    - `backend/src/utils/response.ts` (new)
+
+  **Auth Endpoints Implemented:**
+  - `POST /api/v1/auth/register` - Email + password registration
+  - `POST /api/v1/auth/login` - Login with JWT
+  - `POST /api/v1/auth/refresh` - Refresh token
+  - `POST /api/v1/auth/logout` - Logout
+  - `GET /api/v1/auth/me` - Get current user
+  - `POST /api/v1/auth/google` - Google OAuth
+  - `POST /api/v1/auth/forgot-password` - Password reset request
+
+  **Infrastructure:**
+  - Health check: `GET /health`
+  - CORS middleware configured
+  - Helmet security headers
+  - Morgan request logging
+  - Global error handler
+  - Express-validator integration
+
+  **✅ Verified (2026-08-08):**
+  - Build: PASS
+  - Dev server: RUNNING on http://localhost:3000
+  - MySQL via Docker: CONNECTED
+  - `POST /api/v1/auth/register`: OK
+  - `POST /api/v1/auth/login`: OK
+  - `GET /api/v1/auth/me`: OK
+
+### 2026-08-06
+
+#### Added
 
 - **Backend Prisma Setup v5.22.0**
   - By: AI Assistant

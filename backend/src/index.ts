@@ -1,73 +1,72 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
+import 'dotenv/config'
+import express, { Express, Request, Response, NextFunction } from 'express'
+import helmet from 'helmet'
+import morgan from 'morgan'
+import { corsMiddleware } from './middleware/cors.js'
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
+import authRoutes from './routes/auth.js'
 
-import path from 'path';
+const app: Express = express()
+const PORT = process.env.PORT || 3000
 
-import authRoutes from './modules/auth/auth.routes';
-import restaurantsRoutes from './modules/restaurants/restaurants.routes';
-import rouletteRoutes from './modules/roulette/roulette.routes';
-import groupsRoutes from './modules/groups/groups.routes';
-import locketsRoutes from './modules/lockets/lockets.routes';
-import stewardRoutes from './modules/steward/steward.routes';
-import menuRoutes from './modules/menu/menu.routes';
-import preferencesRoutes from './modules/preferences/preferences.routes';
-import circleRoutes from './modules/circle/circle.routes';
+// Security middleware
+app.use(helmet())
 
-dotenv.config();
+// CORS
+app.use(corsMiddleware)
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+// Body parsing
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true }))
 
-// Security and utility middleware
-app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
-app.use(morgan('dev'));
+// Logging (dev mode)
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'))
+}
 
-// Static uploads directory
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check
+app.get('/health', (req: Request, res: Response) => {
   res.json({
-    status: 'ok',
-    service: 'Food Roulette Backend API',
-    version: '1.0.0',
+    success: true,
+    message: 'Food Roulette API is running',
     timestamp: new Date().toISOString(),
-  });
-});
+    version: '1.0.0',
+  })
+})
 
-// API Module Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/restaurants', restaurantsRoutes);
-app.use('/api/spin', rouletteRoutes);
-app.use('/api/groups', groupsRoutes);
-app.use('/api/lockets', locketsRoutes);
-app.use('/api/steward', stewardRoutes);
-app.use('/api/menu', menuRoutes);
-app.use('/api/preferences', preferencesRoutes);
-app.use('/api/circle', circleRoutes);
+// API Routes
+app.use('/api/v1/auth', authRoutes)
 
-// Global 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint không tồn tại.' });
-});
+// TODO: Add more routes as they are implemented
+// app.use('/api/v1/users', userRoutes)
+// app.use('/api/v1/restaurants', restaurantRoutes)
+// app.use('/api/v1/spins', spinRoutes)
+// app.use('/api/v1/lockets', locketRoutes)
+// app.use('/api/v1/groups', groupRoutes)
 
-// Global Error Handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Unhandled Server Error:', err);
-  res.status(500).json({ error: 'Lỗi hệ thống máy chủ backend.' });
-});
+// 404 handler
+app.use(notFoundHandler)
 
+// Error handler
+app.use(errorHandler)
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🚀 Food Roulette Backend Server is running on port ${PORT}`);
-  console.log(`🔗 Health Check: http://localhost:${PORT}/health`);
-  console.log(`====================================================`);
-});
+  console.log(`
+╔═══════════════════════════════════════════════════════╗
+║                                                       ║
+║   🍜 Food Roulette API Server                         ║
+║   Running on: http://localhost:${PORT}                   ║
+║   Environment: ${process.env.NODE_ENV || 'development'}                        ║
+║                                                       ║
+║   Endpoints:                                          ║
+║   • GET  /health              - Health check          ║
+║   • POST /api/v1/auth/register - Register              ║
+║   • POST /api/v1/auth/login    - Login                 ║
+║   • GET  /api/v1/auth/me      - Get current user      ║
+║                                                       ║
+╚═══════════════════════════════════════════════════════╝
+  `)
+})
 
-export default app;
+export default app
