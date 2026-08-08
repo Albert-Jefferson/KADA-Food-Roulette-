@@ -68,8 +68,12 @@ KADA-Food-Roulette/
 ├── backend/                          # Main backend (Express.js + Prisma)
 │   ├── prisma/                      # Database schema
 │   └── src/
-│       ├── modules/                 # Feature modules
-│       └── shared/                  # Shared middleware & utils
+│       ├── index.ts                # Express app entry
+│       ├── modules/                # Feature modules (auth, roulette, groups...)
+│       ├── shared/                 # Shared services & utilities
+│       ├── middleware/             # CORS, error handling
+│       ├── utils/                  # JWT, hash, response helpers
+│       └── lib/                    # Prisma client
 │
 ├── docker/                           # Docker configs
 ├── scripts/                          # Dev scripts

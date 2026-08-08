@@ -77,29 +77,47 @@ EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
 ```
 KADA-Food-Roulette/
 ├── apps/
-│   └── mobile/                    # Expo + React Native app
-│       └── app/                  # Expo Router pages
-├── backend/
-│   └── prisma/
-│       ├── schema.prisma         # Prisma schema v5.0
-│       └── migrations/
-│           └── v5.0/            # MySQL migration scripts
-│               ├── 000_create_database.sql
-│               ├── complete_schema.sql
-│               ├── seed_data.sql
-│               └── csv_data/     # CSV import scripts
-├── brand/                        # Brand & specs
-│   ├── prompts.md               # Master prompt (single source of truth)
-│   ├── brand.md                 # Brand kit
-│   └── FOOD-ROULETTE-SITEMAP.md # Feature specs
-├── content/                     # Content & exploration
-│   └── explore/                 # Strategy docs
-├── docs/                        # Documentation
-│   └── *.xml                    # ERD diagrams (v2.6 - v4.1)
-├── VIBE_RULES.md               # Vibe coding rules
-├── AGENTS.md                   # AI agent conventions
-├── CHANGELOG_SPEC.md           # Spec change log
-└── PROMPT_TEMPLATES/          # AI context templates
+│   └── web/                         # React + Vite web app
+│       ├── src/
+│       │   ├── api/                 # API client layer
+│       │   │   └── endpoints/      # API endpoint definitions
+│       │   ├── components/          # Shared components
+│       │   ├── features/            # Feature-based modules
+│       │   │   ├── auth/           # Auth feature
+│       │   │   ├── roulette/       # Spin/Roulette feature
+│       │   │   ├── groups/         # Group spin feature
+│       │   │   ├── lockets/        # Locket feature
+│       │   │   ├── restaurants/    # Restaurant feature
+│       │   │   ├── profile/        # Profile feature
+│       │   │   ├── checkin/        # Check-in feature
+│       │   │   ├── menu/           # Menu capture feature
+│       │   │   └── rewards/        # Rewards/Gamification
+│       │   ├── hooks/              # Global hooks
+│       │   ├── stores/             # Zustand stores
+│       │   └── lib/               # Utils & constants
+│       └── package.json
+│
+├── backend/                         # Express.js + Prisma backend
+│   ├── prisma/                     # Database schema & migrations
+│   └── src/
+│       ├── index.ts                # Express app entry
+│       ├── modules/                 # Feature modules (auth, roulette, groups...)
+│       ├── shared/                 # Shared services (middleware, utils)
+│       ├── middleware/              # CORS, error handling
+│       ├── utils/                  # JWT, hash, response helpers
+│       └── lib/                    # Prisma client
+│
+├── docs/                           # Documentation
+│   ├── food_roulette_erd_v5.0_reviewed.xml  # ERD v5.0 (latest)
+│   ├── API_SPEC.md
+│   ├── ERD_MIGRATION_NOTES.md
+│   └── FUNCTIONAL_REQUIREMENTS.md
+├── brand/                          # Brand & specs
+├── docker/                         # Docker configs
+├── .agents/                        # Agent skills
+├── CLAUDE.md                       # AI entry point
+├── VIBE_RULES.md                  # Golden rules
+└── AGENTS.md                      # AI conventions
 ```
 
 ---
@@ -192,7 +210,7 @@ mysql -u root -p food_roulette < backend/prisma/migrations/v5.0/seed_data.sql
 | `brand/FOOD-ROULETTE-SITEMAP.md` | Sitemap & feature specs |
 | `VIBE_RULES.md` | Golden rules cho vibe coding |
 | `AGENTS.md` | AI agent conventions & role templates |
-| `docs/food_roulette_erd.drawio.xml` | Entity Relationship Diagram |
+| `docs/food_roulette_erd_v5.0_reviewed.xml` | Entity Relationship Diagram (v5.0) |
 
 ---
 
