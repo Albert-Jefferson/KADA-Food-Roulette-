@@ -125,6 +125,19 @@
     - `brand/FOOD-ROULETTE-SITEMAP.md` §19 (User interface)
   - Rationale: Đơn giản, đã implement trong code, đủ dùng cho MVP
 
+- **Group, Locket, Notification & Device Hash Decisions**
+  - By: AI Assistant (via Cursor)
+  - Via: User decision
+  - Decisions:
+    - **Group membership:** Có chủ phòng tạo, nhưng **tất cả thành viên** (kể cả chủ phòng) đều có thể thêm người mới sau khi vào phòng
+    - **Group lifecycle:** Group bị **xóa khi tất cả thành viên out**
+    - **Locket lifecycle:** **Vĩnh viễn** (không tự hủy 24h)
+    - **Push notification:** **Per-type toggle** - bật/tắt theo loại (locket mới, spin, group...)
+    - **device_hash reset:** **User-initiated reset** - user chủ động confirm đổi máy trong app
+  - Files affected:
+    - `brand/prompts.md` §9 (resolved 5 open questions)
+    - `brand/FOOD-ROULETTE-SITEMAP.md` §19.10 (resolved 5 open questions)
+
 ### 2026-08-08
 
 ### Added
