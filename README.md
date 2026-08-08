@@ -2,7 +2,7 @@
 
 > *"Không biết ăn gì? Để vòng quyết định."*
 
-**Food Roulette** la web app (React + Vite) giup nguoi Viet Nam chon quan an ngau nhien xung quanh vi tri hien tai bang cach quay mot banh xe.
+**Food Roulette** là mobile app (React Native + Expo, iOS + Android) giúp người Việt Nam chọn quán ăn ngẫu nhiên xung quanh vị trí hiện tại bằng cách quay một bánh xe.
 
 ---
 
@@ -21,8 +21,21 @@
 
 ## Tech Stack
 
+### Frontend (Mobile)
+| Layer | Công nghệ |
+|-------|-----------|
+| Framework | Expo SDK 52 + Expo Router |
+| Language | TypeScript |
+| Styling | NativeWind (Tailwind cho RN) |
+| Animation | Reanimated 3 + Moti |
+| State | Zustand + TanStack Query |
+| Camera | expo-camera + expo-image-picker |
+| GPS | expo-location |
+| HTTP | Axios |
+| Design | Earthy/warm-light-first |
+
 ### Frontend (Web)
-| Layer | Cong nghe |
+| Layer | Công nghệ |
 |-------|-----------|
 | Framework | React 19 + Vite 6 + TypeScript |
 | Styling | Tailwind CSS 3 |
@@ -88,6 +101,19 @@ npm run dev
 ```
 Web app chay tai: http://localhost:5173
 
+**5. Setup Mobile App**
+```bash
+cd apps/mobile
+npm install
+# Create assets/icon.png and assets/splash.png (1024x1024)
+npx expo prebuild
+# iOS:
+npx expo run:ios
+# Android:
+npx expo run:android
+```
+Mobile app: Expo Go (development) hoặc build APK/IPA
+
 ### Environment Variables
 
 **Backend (.env)**
@@ -105,41 +131,29 @@ VITE_API_URL=http://localhost:3000/api
 
 ---
 
-## Cau truc du an
+## Cấu trúc dự án
 
 ```
 KADA-Food-Roulette/
 ├── apps/
-│   └── web/                         # React + Vite web app
-│       └── src/
-│           ├── api/                 # API client layer
-│           │   └── endpoints/       # API endpoint definitions
-│           ├── components/           # Shared components
-│           ├── features/             # Feature-based modules
-│           │   ├── auth/            # Auth feature
-│           │   ├── roulette/        # Spin/Roulette feature
-│           │   ├── groups/          # Group spin feature
-│           │   ├── lockets/         # Locket feature
-│           │   ├── restaurants/     # Restaurant feature
-│           │   ├── profile/         # Profile feature
-│           │   ├── checkin/         # Check-in feature
-│           │   ├── menu/            # Menu capture feature
-│           │   └── rewards/         # Rewards/Gamification
-│           ├── hooks/               # Global hooks
-│           ├── stores/              # Zustand stores
-│           └── lib/                 # Utils & constants
+│   ├── web/                         # React + Vite web app
+│   │   └── src/
+│   │       ├── api/                 # API client layer
+│   │       ├── features/            # Feature-based modules
+│   │       ├── hooks/              # Global hooks
+│   │       ├── stores/             # Zustand stores
+│   │       └── lib/                # Utils & constants
+│   │
+│   └── mobile/                      # Expo + React Native mobile app
+│       └── app/                     # Expo Router pages
+│           ├── auth/                # Auth screens
+│           ├── locket/              # Locket screens
+│           ├── restaurant/          # Restaurant screens
+│           └── (tabs)/              # Tab navigation
 │
 ├── backend/                          # Express.js + Prisma backend
-│   └── src/
-│       ├── index.ts                 # Express app entry
-│       ├── modules/                 # Feature modules
-│       ├── shared/                  # Shared services
-│       └── middleware/              # CORS, auth, error handling
-│
 ├── docker/                           # Docker configs
 ├── docs/                             # Documentation
-│   ├── API_SPEC.md
-│   └── food_roulette_erd_v5.0_reviewed.xml
 ├── brand/                            # Brand & specs
 ├── CLAUDE.md                         # AI entry point
 ├── VIBE_RULES.md                    # Golden rules

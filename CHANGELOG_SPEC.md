@@ -54,6 +54,66 @@
 
 ### Added
 
+- **Mobile App (Expo + React Native) Setup**
+  - By: AI Assistant
+  - Via: Cursor
+  - Spec: `CLAUDE.md` §3 (Mobile structure)
+  - Files affected:
+    - `apps/mobile/package.json` (new - Expo SDK 52 + dependencies)
+    - `apps/mobile/app.json` (new - Expo config)
+    - `apps/mobile/tsconfig.json` (new - TypeScript config)
+    - `apps/mobile/babel.config.js` (new - Babel with nativewind)
+    - `apps/mobile/metro.config.js` (new - Metro bundler config)
+    - `apps/mobile/tailwind.config.js` (new - NativeWind config)
+    - `apps/mobile/app/_layout.tsx` (new - Root layout)
+    - `apps/mobile/app/+not-found.tsx` (new - 404 page)
+    - `apps/mobile/app/(tabs)/_layout.tsx` (new - Tab navigation)
+    - `apps/mobile/app/(tabs)/index.tsx` (new - Home screen)
+    - `apps/mobile/app/(tabs)/spin.tsx` (new - Spin/Roulette screen)
+    - `apps/mobile/app/(tabs)/lockets.tsx` (new - Locket feed screen)
+    - `apps/mobile/app/(tabs)/profile.tsx` (new - Profile screen)
+    - `apps/mobile/app/auth/login.tsx` (new - Login screen)
+    - `apps/mobile/app/auth/register.tsx` (new - Register screen)
+    - `apps/mobile/app/locket/capture.tsx` (new - Camera capture screen)
+    - `apps/mobile/app/restaurant/[id].tsx` (new - Restaurant detail screen)
+    - `apps/mobile/src/api/client.ts` (new - Axios client)
+    - `apps/mobile/src/api/endpoints/auth.ts` (new)
+    - `apps/mobile/src/api/endpoints/roulette.ts` (new)
+    - `apps/mobile/src/api/endpoints/restaurants.ts` (new)
+    - `apps/mobile/src/api/endpoints/groups.ts` (new)
+    - `apps/mobile/src/api/endpoints/lockets.ts` (new)
+    - `apps/mobile/src/api/endpoints/preferences.ts` (new)
+    - `apps/mobile/src/lib/constants.ts` (new - App constants)
+    - `apps/mobile/src/lib/utils.ts` (new - Utility functions)
+    - `apps/mobile/src/stores/authStore.ts` (new - Zustand auth store)
+
+  **Mobile Stack Implemented:**
+  - Expo SDK 52 + Expo Router (file-based routing)
+  - NativeWind v4 (Tailwind for RN)
+  - expo-camera + expo-image-picker
+  - expo-location
+  - expo-secure-store
+  - Zustand (state management)
+  - TanStack Query (data fetching)
+  - Axios (HTTP client)
+
+  **⚠️ Remaining tasks:**
+  - Create `assets/icon.png`, `assets/splash.png`
+  - Run `npx expo prebuild` for native projects
+  - Test with `npx expo start`
+
+### Changed
+
+- **CLAUDE.md - Updated mobile structure**
+  - By: AI Assistant
+  - Via: Cursor
+  - Change: Added detailed `apps/mobile/` structure with Expo Router pages
+  - Files affected: `CLAUDE.md` §3
+
+### 2026-08-08
+
+### Added
+
 - **Express.js + Prisma Backend Setup**
   - By: AI Assistant
   - Via: Cursor

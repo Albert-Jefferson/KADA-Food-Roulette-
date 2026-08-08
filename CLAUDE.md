@@ -5,7 +5,7 @@
 
 ## 1. Dự án là gì
 
-**Food Roulette** — web app (React + Vite) giúp người dùng Việt Nam **chọn quán ăn ngẫu nhiên xung quanh vị trí hiện tại** bằng cách quay một bánh xe.
+**Food Roulette** — mobile app (React Native + Expo, iOS + Android) giúp người dùng Việt Nam **chọn quán ăn ngẫu nhiên xung quanh vị trí hiện tại** bằng cách quay một bánh xe.
 
 Tagline: *"Không biết ăn gì? Để vòng quyết định."*
 
@@ -52,8 +52,27 @@ KADA-Food-Roulette/
 │   │   │   └── pages/              # Route pages (thin wrappers)
 │   │   └── package.json
 │   │
-│   └── mobile/                       # Expo + React Native (future)
-│       └── app/                      # Expo Router pages
+│   └── mobile/                       # Expo + React Native
+│       └── app/                       # Expo Router pages (file-based routing)
+│           ├── _layout.tsx            # Root layout
+│           ├── +not-found.tsx         # 404 page
+│           ├── auth/                  # Auth screens
+│           │   ├── login.tsx
+│           │   └── register.tsx
+│           ├── locket/                # Locket screens
+│           │   └── capture.tsx
+│           ├── restaurant/            # Restaurant screens
+│           │   └── [id].tsx
+│           └── (tabs)/                # Tab navigation
+│               ├── _layout.tsx        # Tab layout
+│               ├── index.tsx          # Home
+│               ├── spin.tsx           # Spin/Roulette
+│               ├── lockets.tsx        # Locket feed
+│               └── profile.tsx        # Profile
+│       └── src/
+│           ├── api/                   # API client & endpoints
+│           ├── lib/                   # Utils & constants
+│           └── stores/                # Zustand stores
 │
 ├── packages/                         # Shared code (published as npm)
 │   ├── ui/                          # Design system
@@ -132,7 +151,7 @@ brand/prompts.md  >  brand/brand.md  >  brand/FOOD-ROULETTE-SITEMAP.md  >  conte
 | Data fetching | TanStack Query |
 | HTTP | Axios |
 
-### Frontend (Mobile - Future)
+### Frontend (Mobile)
 | Layer | Lựa chọn |
 |-------|----------|
 | Framework | Expo SDK 52 + Expo Router |
@@ -140,7 +159,7 @@ brand/prompts.md  >  brand/brand.md  >  brand/FOOD-ROULETTE-SITEMAP.md  >  conte
 | Animation | Reanimated 3 + Moti |
 | State | Zustand + TanStack Query |
 | Map | react-native-maps + OpenStreetMap |
-| Camera | expo-image-picker |
+| Camera | expo-image-picker + expo-camera |
 | GPS | expo-location |
 
 ### Infrastructure
