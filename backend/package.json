@@ -7,6 +7,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "db:validate": "prisma validate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
@@ -38,7 +41,8 @@
     "@types/uuid": "^10.0.0",
     "prisma": "^5.22.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

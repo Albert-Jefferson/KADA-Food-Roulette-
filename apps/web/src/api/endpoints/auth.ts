@@ -14,19 +14,26 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-    displayNamePrivate: string;
-    displayNamePublic: string;
-    publicId: string;
-    avatarUrl?: string;
-    xp: number;
-    streakDays: number;
-    coins: number;
-    role: 'USER' | 'STEWARD' | 'ADMIN';
+  success: boolean;
+  data?: {
+    user: {
+      id: string;
+      email: string;
+      displayNamePrivate: string;
+      displayNamePublic: string;
+      publicId: string;
+      avatarUrl?: string;
+      xp: number;
+      streakDays: number;
+      coins: number;
+      role: 'USER' | 'STEWARD' | 'ADMIN';
+    };
+    access_token: string;
+    refresh_token?: string;
+    expires_in?: number;
+    is_new_user?: boolean;
   };
+  error?: string;
 }
 
 export interface UserProfile {
@@ -44,14 +51,28 @@ export interface UserProfile {
 }
 
 export const authApi = {
-  login: async (data: LoginRequest): Promise<AuthResponse> => {
+  login: async (data: LoginRequest): Promise<{ token: string; user: AuthResponse['data'] extends { user: infer U } ? U : never }> => {
     const response = await apiClient.post<AuthResponse>('/auth/login', data);
-    return response.data;
+    const { data: responseData } = response;
+    if (!responseData?.success || !responseData.data) {
+      throw new Error(responseData?.error || 'Đăng nhập thất bại');
+    }
+    return {
+      token: responseData.data.access_token,
+      user: responseData.data.user
+    };
   },
 
-  register: async (data: RegisterRequest): Promise<AuthResponse> => {
+  register: async (data: RegisterRequest): Promise<{ token: string; user: AuthResponse['data'] extends { user: infer U } ? U : never }> => {
     const response = await apiClient.post<AuthResponse>('/auth/register', data);
-    return response.data;
+    const { data: responseData } = response;
+    if (!responseData?.success || !responseData.data) {
+      throw new Error(responseData?.error || 'Đăng ký thất bại');
+    }
+    return {
+      token: responseData.data.access_token,
+      user: responseData.data.user
+    };
   },
 
   me: async (): Promise<UserProfile> => {
@@ -59,9 +80,16 @@ export const authApi = {
     return response.data;
   },
 
-  google: async (idToken: string): Promise<AuthResponse> => {
+  google: async (idToken: string): Promise<{ token: string; user: AuthResponse['data'] extends { user: infer U } ? U : never }> => {
     const response = await apiClient.post<AuthResponse>('/auth/google', { idToken });
-    return response.data;
+    const { data: responseData } = response;
+    if (!responseData?.success || !responseData.data) {
+      throw new Error(responseData?.error || 'Đăng nhập Google thất bại');
+    }
+    return {
+      token: responseData.data.access_token,
+      user: responseData.data.user
+    };
   },
 
   onboarding: async (data: {
@@ -83,6 +111,11 @@ export const authApi = {
 
   resetPassword: async (resetToken: string, newPassword: string) => {
     const response = await apiClient.post('/auth/reset-password', { resetToken, newPassword });
+    return response.data;
+  },
+
+  refresh: async (refreshToken: string) => {
+    const response = await apiClient.post('/auth/refresh', { refresh_token: refreshToken });
     return response.data;
   },
 };

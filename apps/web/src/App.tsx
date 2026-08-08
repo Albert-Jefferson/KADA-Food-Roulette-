@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
+import { LoginPage, RegisterPage } from './features/auth/components';
 
 // Features - Roulette
 import HomeSpinRewards from './features/roulette/components/HomeSpinRewards';
@@ -47,6 +48,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Auth Routes - No layout wrapper */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Main App Routes */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomeSpinRewards />} />
           <Route path="/locket" element={<LocketFeed />} />

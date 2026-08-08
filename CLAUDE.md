@@ -5,7 +5,7 @@
 
 ## 1. Dự án là gì
 
-**Food Roulette** — mobile app (React Native + Expo, iOS + Android) giúp người dùng Việt Nam **chọn quán ăn ngẫu nhiên xung quanh vị trí hiện tại** bằng cách quay một bánh xe.
+**Food Roulette** — web app (React + Vite) giúp người dùng Việt Nam **chọn quán ăn ngẫu nhiên xung quanh vị trí hiện tại** bằng cách quay một bánh xe.
 
 Tagline: *"Không biết ăn gì? Để vòng quyết định."*
 
