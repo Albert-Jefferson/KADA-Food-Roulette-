@@ -10,7 +10,7 @@ export function useGroups() {
   });
 
   const createGroupMutation = useMutation({
-    mutationFn: groupsApi.create,
+    mutationFn: ({ name, maxMembers }: { name?: string; maxMembers?: number }) => groupsApi.create(name, maxMembers),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['groups'] });
     },
